@@ -12,8 +12,8 @@ import HomeScreen from "./Screens/Main/HomeScreen";
 import SearchScreen from "./Screens/Main/SearchScreen";
 import FollowingScreen from "./Screens/Main/FollowingScreen";
 import ProfileScreen from "./Screens/Main/ProfileScreen";
-import LoadingScreen from "./Screens/Loading/Loading";
-import loginLoad from "./Screens/Loading/LoginLoadScreen";
+import LoadingScreen from "./Screens/Loading";
+import loginLoad from "./Screens/LoginLoadScreen";
 import * as key from "./Firebase";
 
 if (!firebase.apps.length) {
@@ -24,7 +24,33 @@ const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
-//Tab bar navigation function
+function LoggedIn() {
+  const isLogged = false;
+  if (isLogged) {
+    return (
+      <NavigationContainer>
+        <Stack.Navigator headerMode="none" initialRouteName="Home">
+          <Stack.Screen name="Home" component={AuthStack} />
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Signup" component={SignupScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    );
+  } else {
+    return (
+      <NavigationContainer>
+        <Stack.Navigator headerMode="none" initialRouteName="Loading">
+          <Stack.Screen name="Loading" component={LoadingScreen} />
+          <Stack.Screen name="LoginLoad" component={loginLoad} />
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Home" component={drawerStack} />
+          <Stack.Screen name="Signup" component={SignupScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    );
+  }
+}
+
 function AuthStack() {
   return (
     <Tab.Navigator>
@@ -74,9 +100,6 @@ function AuthStack() {
     </Tab.Navigator>
   );
 }
-
-//Drawer navigation function
-//navigates from stack to tab bar navigation
 function drawerStack() {
   return (
     <Drawer.Navigator>
@@ -85,26 +108,6 @@ function drawerStack() {
   );
 }
 
-//Main navigation function using stack nav
-//Home stack screen navigates to drawer stack which then navigates to tab navigation
 export default function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator headerMode="none" initialRouteName="Loading">
-        <Stack.Screen name="Loading" component={LoadingScreen} />
-        <Stack.Screen name="LoginLoad" component={loginLoad} />
-        <Stack.Screen
-          name="Login"
-          component={LoginScreen}
-          options={{ animationEnabled: false }}
-        />
-        <Stack.Screen name="Home" component={drawerStack} />
-        <Stack.Screen
-          name="Signup"
-          component={SignupScreen}
-          options={{ animationEnabled: false }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
+  return <LoggedIn />;
 }
