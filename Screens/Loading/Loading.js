@@ -31,7 +31,7 @@ export default function LoadingScreen({ navigation }) {
       }}
     >
       <Image
-        source={require("../assets/loading.gif")}
+        source={require("../../assets/loading.gif")}
         style={{ height: "25%", width: "25%", resizeMode: "contain" }}
       />
       <Text style={{ marginTop: -40, fontWeight: "bold" }}>Loading</Text>

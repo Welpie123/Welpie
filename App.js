@@ -15,6 +15,7 @@ import ProfileScreen from "./Screens/Main/ProfileScreen";
 import LoadingScreen from "./Screens/Loading/Loading";
 import loginLoad from "./Screens/Loading/LoginLoadScreen";
 import * as key from "./Firebase";
+import { color } from "react-native-reanimated";
 
 if (!firebase.apps.length) {
   firebase.initializeApp(key.firebaseConfig);
@@ -49,8 +50,9 @@ function AuthStack() {
         component={AddScreen}
         options={{
           tabBarIcon: () => (
-            <Icon name="add-circle" size={35} color="#7653D9" />
+            <Icon name="add-circle" size={60} color="#7653D9" />
           ),
+          title: "",
         }}
       />
       <Tab.Screen
@@ -75,16 +77,6 @@ function AuthStack() {
   );
 }
 
-//Drawer navigation function
-//navigates from stack to tab bar navigation
-function drawerStack() {
-  return (
-    <Drawer.Navigator>
-      <Drawer.Screen name="Home" component={AuthStack} />
-    </Drawer.Navigator>
-  );
-}
-
 //Main navigation function using stack nav
 //Home stack screen navigates to drawer stack which then navigates to tab navigation
 export default function App() {
@@ -98,7 +90,7 @@ export default function App() {
           component={LoginScreen}
           options={{ animationEnabled: false }}
         />
-        <Stack.Screen name="Home" component={drawerStack} />
+        <Stack.Screen name="Home" component={AuthStack} />
         <Stack.Screen
           name="Signup"
           component={SignupScreen}
