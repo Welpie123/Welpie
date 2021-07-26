@@ -36,7 +36,7 @@ export default function LoginScreen({ navigation }) {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.containerTopBox}>
-        <StatusBar hidden />
+        <StatusBar translucent />
         <Text style={styles.title}>Welpie</Text>
         <Image source={require("../../assets/logo.png")} style={styles.logo} />
       </View>

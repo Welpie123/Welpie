@@ -12,11 +12,13 @@ import {
   LogBox,
   ScrollView,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import firebase from "firebase/app";
 import "firebase/storage";
 import "firebase/firestore";
 import profile from "../../assets/profile.png";
+import pic from "../../assets/no_user.png";
 // Tab ICons...
 import chat from "../../assets/chat.png";
 import about from "../../assets/about.png";
@@ -62,7 +64,7 @@ function Item({ items }) {
         <Text style={{ fontSize: 12 }}>{items.text}</Text>
         <Image
           source={{ uri: items.Image }}
-          style={{ width: 270, height: 150, borderRadius: 10, marginTop: 10 }}
+          style={{ width: 290, height: 150, borderRadius: 10, marginTop: 10 }}
         />
       </View>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
@@ -103,8 +105,6 @@ export default function App(navigation) {
   const closeButtonOffset = useRef(new Animated.Value(0)).current;
   const [loading, setLoading] = useState(true); // Set loading to true on component mount
   const [users, setUsers] = useState([]);
-  const [text, setText] = useState("");
-  const [age, setAge] = useState("");
   const [tag, setTag] = useState("cars");
 
   const change = (t) => {
@@ -143,14 +143,13 @@ export default function App(navigation) {
         setUsers(users);
         setLoading(false);
       });
-
     // Unsubscribe from events when no longer in use
     return () => subscriber();
   }, []);
 
   return (
     <SafeAreaView style={styles.drawer}>
-      <StatusBar hidden />
+      <StatusBar translucent />
       <View style={{ justifyContent: "flex-start", padding: 15 }}>
         <View style={{ flexDirection: "row" }}>
           <Image
@@ -171,7 +170,7 @@ export default function App(navigation) {
                 marginTop: 20,
               }}
             >
-              Jenna Ezarik
+              {firebase.auth().currentUser.displayName}
             </Text>
 
             <TouchableOpacity>
@@ -279,6 +278,7 @@ export default function App(navigation) {
 
                   setShowMenu(!showMenu);
                 }}
+                style={{ width: 40, height: 50 }}
               >
                 <Image
                   source={showMenu ? close : menu}
@@ -352,21 +352,32 @@ export default function App(navigation) {
               </TouchableOpacity>
             </ScrollView>
           </View>
-          <ScrollView showsVerticalScrollIndicator={false}>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            style={{ height: "89%" }}
+          >
             <View
               style={{
                 justifyContent: "center",
                 alignItems: "center",
-                paddingBottom: 120,
+                paddingBottom: 50,
               }}
             >
-              <FlatList
-                data={users}
-                renderItem={({ item }) => <Item items={item} />}
-                style={{ height: "100%", flexGrow: 0, marginTop: 5 }}
-                showsVerticalScrollIndicator={false}
-                verticalScrollIndicator={false}
-              />
+              {loading ? (
+                <ActivityIndicator
+                  size={25}
+                  color="black"
+                  style={{ justifyContent: "center", alignItems: "center" }}
+                />
+              ) : (
+                <FlatList
+                  data={users}
+                  renderItem={({ item }) => <Item items={item} />}
+                  style={{ height: "100%", flexGrow: 0, marginTop: 5 }}
+                  showsVerticalScrollIndicator={false}
+                  verticalScrollIndicator={false}
+                />
+              )}
             </View>
           </ScrollView>
         </Animated.View>
@@ -432,7 +443,7 @@ const styles = StyleSheet.create({
   },
   article: {
     backgroundColor: "#FFF",
-    width: 320,
+    width: 330,
     height: 285,
     borderRadius: 9,
     padding: 10,

@@ -28,11 +28,20 @@ export default function LoginScreen({ navigation }) {
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
-      .then((result) => {
-        firebase.auth().currentUser.updateProfile({ displayName: username });
-        navigation.navigate("Home");
-      })
-      .catch((error) => setError(error.code));
+      .catch((error) => {
+        if (username == "") {
+        }
+        firebase.auth().onAuthStateChanged((user) => {
+          if (user) {
+            firebase
+              .auth()
+              .currentUser.updateProfile({ displayName: username });
+          }
+        });
+        setError(error.code);
+        navigation.navigate("Signup");
+      });
+    navigation.navigate("LoginLoad");
   }
 
   return (
