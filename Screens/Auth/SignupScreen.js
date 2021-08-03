@@ -8,13 +8,13 @@ import {
   TextInput,
   TouchableOpacity,
   Dimensions,
-  StatusBar,
-  KeyboardAvoidingView,
+  ActivityIndicator,
   ScrollView,
-  Platform,
 } from "react-native";
 import firebase from "firebase/app";
 import "firebase/auth";
+import "firebase/firestore";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -23,95 +23,165 @@ export default function LoginScreen({ navigation }) {
   const [username, setUser] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [selectedIcon, setSelected] = useState("user");
+  const [loading, setLoading] = useState(false);
+  const activeIcon = "#9c82e3";
+  const inactiveIcon = "white";
+  const db = firebase.firestore();
+
+  function addUserToDb() {
+    db.collection("test_users")
+      .doc(firebase.auth().currentUser.uid)
+      .set({
+        name: username,
+        email: email,
+        access: "user",
+      })
+      .then(console.log(`${username} added as user`));
+    setLoading(false);
+  }
+
+  function addAdminToDb() {
+    db.collection("test_users")
+      .doc(firebase.auth().currentUser.uid)
+      .set({
+        name: username,
+        email: email,
+        access: "admin",
+      })
+      .then(console.log(`${username} added as admin`));
+    setLoading(false);
+  }
 
   function signup() {
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
-      .catch((error) => {
-        if (username == "") {
-        }
+      .then(() => {
         firebase.auth().onAuthStateChanged((user) => {
           if (user) {
             firebase
               .auth()
               .currentUser.updateProfile({ displayName: username });
+            selectedIcon == "user" ? addUserToDb() : addAdminToDb();
           }
         });
+      })
+      .catch((error) => {
         setError(error.code);
-        navigation.navigate("Signup");
       });
-    navigation.navigate("LoginLoad");
+    //navigation.navigate("LoginLoad");
+    setLoading(true);
   }
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.containerTopBox}>
-        <StatusBar hidden />
-        <Text style={styles.title}>Welpie</Text>
-        <Image source={require("../../assets/logo.png")} style={styles.logo} />
-      </View>
-      <View style={styles.containerBottompBox}>
-        <View
-          style={
-            Platform.OS == "ios"
-              ? styles.containerInnerBottomBoxIOS
-              : styles.containerInnerBottomBoxAndroid
-          }
-        >
-          <Text style={{ fontSize: 25, fontWeight: "bold" }}>Signup</Text>
-          <Text style={styles.error}>{error}</Text>
-          <Text
-            style={
-              Platform.OS === "ios" ? styles.userTxtIOS : styles.userTxtAndroid
-            }
-          >
-            Username
-          </Text>
-          <TextInput
-            placeholder="Enter your username"
-            style={styles.input}
-            onChangeText={(username) => setUser(username)}
-          />
-          <Text
-            style={
-              Platform.OS === "ios"
-                ? styles.emailTxtIOS
-                : styles.emailTxtAndroid
-            }
-          >
-            Email
-          </Text>
-          <TextInput
-            placeholder="Enter your email"
-            style={styles.input}
-            onChangeText={(email) => setEmail(email)}
-          />
-          <Text
-            style={
-              Platform.OS === "ios" ? styles.passTxtIOS : styles.passTxtAndroid
-            }
-          >
-            Password
-          </Text>
-          <TextInput
-            placeholder="Enter your password"
-            style={styles.input}
-            onChangeText={(password) => setPassword(password)}
-            secureTextEntry
-          />
-          <TouchableOpacity style={styles.button} onPress={() => signup()}>
-            <Text>Signup</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.containerfooter}>
-          <Text>Have an account?</Text>
-          <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-            <Text style={styles.inputFooter}>Login</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </ScrollView>
+    <View style={styles.container}>
+      {loading ? (
+        <ActivityIndicator
+          color="black"
+          size={30}
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: height / 2,
+          }}
+        />
+      ) : (
+        <ScrollView style={styles.container}>
+          <View style={styles.containerTopBox}>
+            <Text style={styles.title}>Welpie</Text>
+            <Image
+              source={require("../../assets/logo.png")}
+              style={styles.logo}
+            />
+          </View>
+          <View style={styles.containerBottompBox}>
+            <View style={styles.containerInnerBottomBox}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  width: width / 1.1,
+                  justifyContent: "space-between",
+                  height: 60,
+                  marginBottom: 10,
+                }}
+              >
+                <TouchableOpacity
+                  onPress={() => {
+                    setSelected("user");
+                  }}
+                  style={{
+                    backgroundColor:
+                      selectedIcon == "user" ? activeIcon : inactiveIcon,
+                    width: width / 2.2,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    borderTopLeftRadius: 20,
+                  }}
+                >
+                  <View>
+                    <Icon name="user" size={20} color="black" />
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    setSelected("briefcase");
+                  }}
+                  style={{
+                    backgroundColor:
+                      selectedIcon == "briefcase" ? activeIcon : inactiveIcon,
+                    width: width / 2.2,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderTopRightRadius: 20,
+                  }}
+                >
+                  <View>
+                    <Icon name="briefcase" size={20} color="black" />
+                  </View>
+                </TouchableOpacity>
+              </View>
+              <Text style={{ fontSize: 25, fontWeight: "bold" }}>Signup</Text>
+              <Text style={styles.error}>{error}</Text>
+              <View>
+                <Text style={styles.userTxt}>
+                  {selectedIcon == "user" ? "Username" : "Business name"}
+                </Text>
+                <TextInput
+                  placeholder="Enter your name"
+                  autoCapitalize="words"
+                  style={styles.input}
+                  onChangeText={(username) => setUser(username)}
+                />
+                <Text style={styles.emailTxt}>Email</Text>
+                <TextInput
+                  placeholder="Enter your email"
+                  style={styles.input}
+                  onChangeText={(email) => setEmail(email)}
+                />
+                <Text style={styles.passTxt}>Password</Text>
+                <TextInput
+                  placeholder="Enter your password"
+                  style={styles.input}
+                  onChangeText={(password) => setPassword(password)}
+                  secureTextEntry
+                />
+              </View>
+
+              <TouchableOpacity style={styles.button} onPress={() => signup()}>
+                <Text>Signup</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.containerfooter}>
+              <Text>Have an account?</Text>
+              <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+                <Text style={styles.inputFooter}>Login</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </ScrollView>
+      )}
+    </View>
   );
 }
 
@@ -131,21 +201,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: height,
   },
-  containerInnerBottomBoxIOS: {
+  containerInnerBottomBox: {
     backgroundColor: "white",
-    height: height / 2,
+
     width: width / 1.1,
-    padding: height / 25,
-    marginTop: -height / 15,
-    marginLeft: width / 20,
-    borderRadius: 20,
-    alignItems: "center",
-  },
-  containerInnerBottomBoxAndroid: {
-    backgroundColor: "white",
-    height: height / 1.75,
-    width: width / 1.1,
-    padding: height / 25,
+    paddingLeft: height / 25,
+    paddingRight: height / 25,
+    paddingBottom: height / 25,
     marginTop: -height / 15,
     marginLeft: width / 20,
     borderRadius: 20,
@@ -154,7 +216,7 @@ const styles = StyleSheet.create({
   containerfooter: {
     alignItems: "center",
     justifyContent: "center",
-    paddingTop: 30,
+    paddingTop: 15,
     flexDirection: "row",
   },
   title: {
@@ -189,39 +251,20 @@ const styles = StyleSheet.create({
     paddingLeft: 5,
   },
   error: { color: "red" },
-  userTxtIOS: {
-    marginTop: height / 30,
-    paddingRight: width / 3.65,
+  userTxt: {
+    marginTop: height / 90,
     fontSize: 20,
     fontStyle: "italic",
     marginBottom: height / 100,
   },
-  emailTxtIOS: {
-    paddingRight: width / 2.65,
+  emailTxt: {
     fontSize: 20,
     fontStyle: "italic",
     marginBottom: height / 100,
   },
-  passTxtIOS: {
-    paddingRight: width / 3.5,
+  passTxt: {
     fontSize: 20,
     fontStyle: "italic",
     marginBottom: height / 100,
-  },
-  userTxtAndroid: {
-    marginTop: height / 30,
-    paddingRight: width / 3.8,
-    fontSize: 20,
-    fontStyle: "italic",
-  },
-  emailTxtAndroid: {
-    paddingRight: width / 2.7,
-    fontSize: 20,
-    fontStyle: "italic",
-  },
-  passTxtAndroid: {
-    paddingRight: width / 3.8,
-    fontSize: 20,
-    fontStyle: "italic",
   },
 });

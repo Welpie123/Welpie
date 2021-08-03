@@ -34,7 +34,7 @@ export default function LoadingScreen({ navigation }) {
         source={require("../../assets/loading.gif")}
         style={{ height: "25%", width: "25%", resizeMode: "contain" }}
       />
-      <Text style={{ marginTop: -40, fontWeight: "bold" }}>Loading</Text>
+      <Text style={{ marginTop: -40, fontWeight: "bold" }}>Loading!!</Text>
     </View>
   );
 }

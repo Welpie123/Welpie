@@ -13,7 +13,6 @@ import SearchScreen from "./Screens/Main/SearchScreen";
 import FollowingScreen from "./Screens/Main/FollowingScreen";
 import ProfileScreen from "./Screens/Main/ProfileScreen";
 import LoadingScreen from "./Screens/Loading/Loading";
-import loginLoad from "./Screens/Loading/LoginLoadScreen";
 import * as key from "./Firebase";
 import { color } from "react-native-reanimated";
 
@@ -82,9 +81,8 @@ function AuthStack() {
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator headerMode="none" initialRouteName="Loading">
+      <Stack.Navigator headerMode="none" initialRouteName="Login">
         <Stack.Screen name="Loading" component={LoadingScreen} />
-        <Stack.Screen name="LoginLoad" component={loginLoad} />
         <Stack.Screen
           name="Login"
           component={LoginScreen}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -10,9 +10,13 @@ import {
   StatusBar,
   ScrollView,
   Platform,
+  ActivityIndicator,
+  Button,
 } from "react-native";
 import firebase from "firebase/app";
 import "firebase/auth";
+import "firebase/firestore";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -20,63 +24,152 @@ export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [selectedIcon, setSelected] = useState("user");
+  const [loading, setLoading] = useState(false);
+  const activeIcon = "#9c82e3";
+  const inactiveIcon = "white";
+  const db = firebase.firestore();
+  var usersData;
+
+  async function userLoad() {
+    usersData = (
+      await db
+        .collection("test_users")
+        .doc(firebase.auth().currentUser.uid)
+        .get()
+    ).data();
+  }
+
+  async function checkData() {
+    await userLoad();
+    console.log(usersData);
+    /*if (usersData == undefined) {
+      setError("User not found");
+    }*/
+
+    if (usersData.access == "user" && selectedIcon == "user") {
+      console.log("navigate to home yes");
+      navigation.navigate("Home");
+    } else if (usersData.access == "user" && selectedIcon == "briefcase") {
+      firebase.auth().signOut();
+      setError("Account is set as USER");
+    } else if (usersData.access == "admin" && selectedIcon == "user") {
+      firebase.auth().signOut();
+      setError("Account is set as BUSINESS");
+    } else if (usersData.access == "admin" && selectedIcon == "briefcase") {
+      console.log("navigate to home no");
+      navigation.navigate("Home");
+    }
+  }
 
   function login() {
     firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
+      .then(() => {
+        firebase.auth().onAuthStateChanged((user) => {
+          if (user) {
+            console.log("looged in");
+            checkData();
+          }
+        });
+      })
       .catch((error) => {
-        setError(error.code);
+        setError(error.message);
         // Navigate back from loginLoadScreen if error occurs
-        navigation.navigate("Login");
+        //navigation.navigate("Login");
       });
-    navigation.navigate("LoginLoad");
+    //navigation.navigate("LoginLoad");
   }
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.containerTopBox}>
-        <StatusBar translucent />
+        <StatusBar hidden />
         <Text style={styles.title}>Welpie</Text>
         <Image source={require("../../assets/logo.png")} style={styles.logo} />
       </View>
       <View style={styles.containerBottompBox}>
-        <View style={styles.containerInnerBottomBox}>
-          <Text style={{ fontSize: 25, fontWeight: "bold" }}>Login</Text>
+        <View style={styles.card}>
+          <View
+            style={{
+              flexDirection: "row",
+              width: width / 1.1,
+              justifyContent: "space-between",
+              height: 60,
+              marginBottom: 10,
+            }}
+          >
+            <TouchableOpacity
+              onPress={() => {
+                setSelected("user");
+              }}
+              style={{
+                backgroundColor:
+                  selectedIcon == "user" ? activeIcon : inactiveIcon,
+                width: width / 2.2,
+                justifyContent: "center",
+                alignItems: "center",
+                borderTopLeftRadius: 20,
+              }}
+            >
+              <View>
+                <Icon name="user" size={20} color="black" />
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setSelected("briefcase");
+              }}
+              style={{
+                backgroundColor:
+                  selectedIcon == "briefcase" ? activeIcon : inactiveIcon,
+                width: width / 2.2,
+                alignItems: "center",
+                justifyContent: "center",
+                borderTopRightRadius: 20,
+              }}
+            >
+              <View>
+                <Icon name="briefcase" size={20} color="black" />
+              </View>
+            </TouchableOpacity>
+          </View>
+
+          <Text style={{ fontSize: 25, fontWeight: "bold" }}>LOGIN</Text>
+
           <Text style={styles.error}>{error}</Text>
-          <Text
-            style={
-              Platform.OS == "ios" ? styles.emailTxtIOS : styles.emailTxtAndroid
-            }
-          >
-            Email
-          </Text>
-          <TextInput
-            placeholder="Enter your email"
-            style={styles.input}
-            onChangeText={(email) => setEmail(email)}
-          />
-          <Text
-            style={
-              Platform.OS === "ios" ? styles.passTxtIOS : styles.passTxtAndroid
-            }
-          >
-            Password
-          </Text>
-          <TextInput
-            placeholder="Enter your password"
-            style={styles.input}
-            onChangeText={(password) => setPassword(password)}
-            secureTextEntry
-          />
+          <View>
+            {selectedIcon == "user" ? (
+              <Text style={styles.emailTxt}>Email</Text>
+            ) : (
+              <Text style={styles.emailTxt}>Business email</Text>
+            )}
+            <TextInput
+              placeholder="Enter your email"
+              style={styles.input}
+              onChangeText={(email) => setEmail(email)}
+            />
+            <Text style={styles.passTxt}>Password</Text>
+            <TextInput
+              placeholder="Enter your password"
+              style={styles.input}
+              onChangeText={(password) => setPassword(password)}
+              secureTextEntry
+            />
+          </View>
+
           <TouchableOpacity
             style={
               Platform.OS === "ios" ? styles.buttonIOS : styles.buttonAndroid
             }
-            onPress={() => login(email, password, navigation)}
+            onPress={() => {
+              login(email, password);
+            }}
           >
             <Text>Login</Text>
           </TouchableOpacity>
+          <Button title="Get Users" onPress={() => checkData()} />
         </View>
         <View style={styles.containerfooter}>
           <Text>Don't have an account?</Text>
@@ -105,11 +198,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: height,
   },
-  containerInnerBottomBox: {
+  card: {
     backgroundColor: "white",
-    height: height / 2.2,
     width: width / 1.1,
-    padding: height / 30,
+    paddingBottom: height / 30,
+    paddingRight: height / 30,
+    paddingLeft: height / 30,
     marginTop: -height / 15,
     marginLeft: width / 20,
     borderRadius: 20,
@@ -162,28 +256,14 @@ const styles = StyleSheet.create({
     paddingLeft: 5,
   },
   error: { color: "red" },
-  emailTxtIOS: {
-    marginTop: 30,
-    paddingRight: width / 2.65,
-    fontSize: 20,
-    fontStyle: "italic",
-    marginBottom: height / 70,
-  },
-  emailTxtAndroid: {
+  emailTxt: {
     marginTop: height / 50,
-    paddingRight: width / 2.7,
     fontSize: 20,
     fontStyle: "italic",
   },
-  passTxtIOS: {
-    paddingRight: width / 3.55,
+  passTxt: {
     fontSize: 20,
     fontStyle: "italic",
-    marginBottom: height / 70,
-  },
-  passTxtAndroid: {
-    paddingRight: width / 3.8,
-    fontSize: 20,
-    fontStyle: "italic",
+    marginBottom: height / 90,
   },
 });

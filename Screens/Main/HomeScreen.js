@@ -1,4 +1,3 @@
-import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useState, useRef } from "react";
 import {
   StyleSheet,
@@ -13,6 +12,7 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  StatusBar,
 } from "react-native";
 import firebase from "firebase/app";
 import "firebase/storage";
@@ -44,11 +44,7 @@ if (!firebase.apps.length) {
 LogBox.ignoreLogs([`Setting a timer for a long period`]);
 
 const db = firebase.firestore();
-const wid = Dimensions.get("window").width;
-
-function logoutUser(navigation) {
-  firebase.auth().signOut();
-}
+const { height, width } = Dimensions.get("screen");
 
 function Item({ items }) {
   return (
@@ -64,7 +60,12 @@ function Item({ items }) {
         <Text style={{ fontSize: 12 }}>{items.text}</Text>
         <Image
           source={{ uri: items.Image }}
-          style={{ width: 290, height: 150, borderRadius: 10, marginTop: 10 }}
+          style={{
+            width: width / 1.3,
+            height: 150,
+            borderRadius: 10,
+            marginTop: 10,
+          }}
         />
       </View>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
@@ -92,7 +93,7 @@ function Item({ items }) {
   );
 }
 
-export default function App(navigation) {
+export default function App({ navigation }) {
   const [currentTab, setCurrentTab] = useState("Home");
   // To get the curretn Status of menu ...
   const [showMenu, setShowMenu] = useState(false);
@@ -149,7 +150,6 @@ export default function App(navigation) {
 
   return (
     <SafeAreaView style={styles.drawer}>
-      <StatusBar translucent />
       <View style={{ justifyContent: "flex-start", padding: 15 }}>
         <View style={{ flexDirection: "row" }}>
           <Image
@@ -240,10 +240,10 @@ export default function App(navigation) {
           <View
             style={{
               backgroundColor: "#7653D9",
-              height: 100,
               borderBottomLeftRadius: 23,
               borderBottomRightRadius: 23,
               paddingLeft: 25,
+              paddingBottom: 20,
             }}
           >
             <View
@@ -354,13 +354,13 @@ export default function App(navigation) {
           </View>
           <ScrollView
             showsVerticalScrollIndicator={false}
-            style={{ height: "89%" }}
+            style={{ height: "85%" }}
           >
             <View
               style={{
                 justifyContent: "center",
                 alignItems: "center",
-                paddingBottom: 50,
+                paddingBottom: 60,
               }}
             >
               {loading ? (
@@ -392,7 +392,8 @@ const TabButton = (currentTab, setCurrentTab, title, image, navigation) => {
     <TouchableOpacity
       onPress={() => {
         if (title == "LogOut") {
-          logoutUser(navigation);
+          navigation.navigate("Login");
+          firebase.auth().signOut();
         } else {
           setCurrentTab(title);
         }
@@ -443,7 +444,7 @@ const styles = StyleSheet.create({
   },
   article: {
     backgroundColor: "#FFF",
-    width: 330,
+    width: width / 1.1,
     height: 285,
     borderRadius: 9,
     padding: 10,
