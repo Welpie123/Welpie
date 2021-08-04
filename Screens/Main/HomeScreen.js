@@ -12,7 +12,6 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
-  StatusBar,
 } from "react-native";
 import firebase from "firebase/app";
 import "firebase/storage";

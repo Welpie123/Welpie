@@ -39,6 +39,7 @@ export default function LoginScreen({ navigation }) {
       })
       .then(console.log(`${username} added as user`));
     setLoading(false);
+    navigation.navigate("Home");
   }
 
   function addAdminToDb() {
@@ -51,6 +52,7 @@ export default function LoginScreen({ navigation }) {
       })
       .then(console.log(`${username} added as admin`));
     setLoading(false);
+    navigation.navigate("Home");
   }
 
   function signup() {

@@ -71,21 +71,20 @@ export default function LoginScreen({ navigation }) {
           if (user) {
             console.log("looged in");
             checkData();
+            setLoading(false);
           }
         });
       })
       .catch((error) => {
         setError(error.message);
-        // Navigate back from loginLoadScreen if error occurs
-        //navigation.navigate("Login");
+        setLoading(false);
       });
-    //navigation.navigate("LoginLoad");
+    setLoading(true);
   }
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.containerTopBox}>
-        <StatusBar hidden />
         <Text style={styles.title}>Welpie</Text>
         <Image source={require("../../assets/logo.png")} style={styles.logo} />
       </View>
@@ -137,6 +136,11 @@ export default function LoginScreen({ navigation }) {
           </View>
 
           <Text style={{ fontSize: 25, fontWeight: "bold" }}>LOGIN</Text>
+          {loading ? (
+            <ActivityIndicator color="#7653D9" size={30} />
+          ) : (
+            <Text style={{ fontSize: 0 }} />
+          )}
 
           <Text style={styles.error}>{error}</Text>
           <View>
@@ -169,7 +173,6 @@ export default function LoginScreen({ navigation }) {
           >
             <Text>Login</Text>
           </TouchableOpacity>
-          <Button title="Get Users" onPress={() => checkData()} />
         </View>
         <View style={styles.containerfooter}>
           <Text>Don't have an account?</Text>
