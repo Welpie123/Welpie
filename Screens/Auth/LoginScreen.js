@@ -49,7 +49,12 @@ export default function LoginScreen({ navigation }) {
 
     if (usersData.access == "user" && selectedIcon == "user") {
       console.log("navigate to home yes");
-      navigation.navigate("Home");
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Home" }],
+      });
+      setLoading(false);
+      //navigation.navigate("Home");
     } else if (usersData.access == "user" && selectedIcon == "briefcase") {
       firebase.auth().signOut();
       setError("Account is set as USER");
@@ -58,7 +63,11 @@ export default function LoginScreen({ navigation }) {
       setError("Account is set as BUSINESS");
     } else if (usersData.access == "admin" && selectedIcon == "briefcase") {
       console.log("navigate to home no");
-      navigation.navigate("Home");
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Home" }],
+      });
+      setLoading(false);
     }
   }
 
@@ -71,7 +80,6 @@ export default function LoginScreen({ navigation }) {
           if (user) {
             console.log("looged in");
             checkData();
-            setLoading(false);
           }
         });
       })

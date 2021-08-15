@@ -12,7 +12,12 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  StatusBar,
+  TextInput,
 } from "react-native";
+import moment from "moment";
+import RBSheet from "react-native-raw-bottom-sheet";
+import Icon from "react-native-vector-icons/FontAwesome";
 import firebase from "firebase/app";
 import "firebase/storage";
 import "firebase/firestore";
@@ -41,58 +46,14 @@ if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
 LogBox.ignoreLogs([`Setting a timer for a long period`]);
+LogBox.ignoreLogs([`VirtualizedLists`]);
 
 const db = firebase.firestore();
 const { height, width } = Dimensions.get("screen");
 
-function Item({ items }) {
-  return (
-    <View style={styles.article}>
-      <View style={styles.header}>
-        <Image source={{ uri: items.profile }} style={styles.profilePhoto} />
-        <View style={{ paddingLeft: 5 }}>
-          <Text style={{ fontWeight: "bold" }}>{items.Name}</Text>
-          <Text style={{ fontSize: 12 }}>{items.timestamp}</Text>
-        </View>
-      </View>
-      <View style={{ padding: 10 }}>
-        <Text style={{ fontSize: 12 }}>{items.text}</Text>
-        <Image
-          source={{ uri: items.Image }}
-          style={{
-            width: width / 1.3,
-            height: 150,
-            borderRadius: 10,
-            marginTop: 10,
-          }}
-        />
-      </View>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <View style={{ flexDirection: "row" }}>
-          <Text style={{ fontSize: 10, marginRight: 5, marginTop: 1 }}>
-            {items.likes}
-          </Text>
-          <Image
-            source={require("../../assets/heart.png")}
-            style={{ width: 15, height: 15 }}
-          />
-        </View>
-
-        <View style={{ flexDirection: "row" }}>
-          <Text style={{ fontSize: 10, marginRight: 5, marginTop: 1 }}>
-            {items.comments}
-          </Text>
-          <Image
-            source={require("../../assets/heart.png")}
-            style={{ width: 15, height: 15 }}
-          />
-        </View>
-      </View>
-    </View>
-  );
-}
-
 export default function App({ navigation }) {
+  const refRBSheet = useRef();
+  const textInput = useRef();
   const [currentTab, setCurrentTab] = useState("Home");
   // To get the curretn Status of menu ...
   const [showMenu, setShowMenu] = useState(false);
@@ -106,6 +67,8 @@ export default function App({ navigation }) {
   const [loading, setLoading] = useState(true); // Set loading to true on component mount
   const [users, setUsers] = useState([]);
   const [tag, setTag] = useState("cars");
+  const [id, setId] = useState("sXbZqNPGXLokfs2RsPGl");
+  const [comment, setComment] = useState("");
 
   const change = (t) => {
     setTag(t);
@@ -127,6 +90,7 @@ export default function App({ navigation }) {
   };
 
   useEffect(() => {
+    console.log("run use effect");
     const subscriber = db
       .collection("Articles")
       .where("tag", "==", tag)
@@ -146,6 +110,108 @@ export default function App({ navigation }) {
     // Unsubscribe from events when no longer in use
     return () => subscriber();
   }, []);
+
+  function Item({ items }) {
+    return (
+      <View style={styles.article}>
+        <View style={styles.header}>
+          {items.profile == "" ? (
+            <View
+              style={{
+                backgroundColor: "#cccccc",
+                width: 40,
+                height: 40,
+                borderRadius: 20,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Icon name="user" size={20} />
+            </View>
+          ) : (
+            <Image
+              source={{ uri: items.profile }}
+              style={styles.profilePhoto}
+            />
+          )}
+
+          <View style={{ paddingLeft: 5 }}>
+            <Text style={{ fontWeight: "bold" }}>{items.Name}</Text>
+            <Text style={{ fontSize: 12 }}>
+              {moment(items.timestamp).fromNow()}
+            </Text>
+          </View>
+        </View>
+        <View style={{ padding: 10 }}>
+          <Text style={{ fontSize: 12 }}>{items.text}</Text>
+          <Image
+            source={{ uri: items.Image }}
+            style={{
+              width: width / 1.3,
+              height: 150,
+              borderRadius: 10,
+              marginTop: 10,
+            }}
+          />
+        </View>
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <View style={{ flexDirection: "row" }}>
+            <Text style={{ fontSize: 10, marginRight: 5, marginTop: 1 }}>
+              {items.likes}
+            </Text>
+            <TouchableOpacity
+              onPress={() => {
+                setId(items.key);
+                incLike();
+              }}
+            >
+              <Image
+                source={require("../../assets/heart.png")}
+                style={{ width: 15, height: 15 }}
+              />
+            </TouchableOpacity>
+          </View>
+
+          <View style={{ flexDirection: "row" }}>
+            <Text style={{ fontSize: 10, marginRight: 5, marginTop: 1 }}>
+              {items.commentsNum}
+            </Text>
+            <TouchableOpacity
+              onPress={() => {
+                setId(items.key);
+                console.log("presssed");
+                refRBSheet.current.open();
+              }}
+            >
+              <Image
+                source={require("../../assets/comment.png")}
+                style={{ width: 15, height: 15 }}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    );
+  }
+
+  function addComment() {
+    db.collection("Articles")
+      .doc(id)
+      .update({ comments: firebase.firestore.FieldValue.arrayUnion(comment) });
+    const commentsNum =
+      parseInt(users.filter((items) => items.key == id)[0].commentsNum) + 1;
+    db.collection("Articles")
+      .doc(id)
+      .update({ commentsNum: String(commentsNum) });
+  }
+
+  function incLike() {
+    const like =
+      parseInt(users.filter((items) => items.key == id)[0].likes) + 1;
+    db.collection("Articles")
+      .doc(id)
+      .update({ likes: String(like) });
+  }
 
   return (
     <SafeAreaView style={styles.drawer}>
@@ -241,8 +307,10 @@ export default function App({ navigation }) {
               backgroundColor: "#7653D9",
               borderBottomLeftRadius: 23,
               borderBottomRightRadius: 23,
+              borderTopLeftRadius: 23,
               paddingLeft: 25,
               paddingBottom: 20,
+              paddingTop: StatusBar.currentHeight,
             }}
           >
             <View
@@ -377,6 +445,54 @@ export default function App({ navigation }) {
                   verticalScrollIndicator={false}
                 />
               )}
+              <RBSheet
+                ref={refRBSheet}
+                closeOnDragDown={true}
+                dragFromTopOnly={true}
+                closeOnPressMask={true}
+                height={height / 2}
+                customStyles={{
+                  wrapper: {
+                    backgroundColor: "transparent",
+                  },
+                  draggableIcon: {
+                    backgroundColor: "#000",
+                  },
+                  container: {
+                    borderRadius: 20,
+                  },
+                }}
+              >
+                <View style={styles.commentContainer}>
+                  <ScrollView>
+                    {loading ? (
+                      <Text>Hello</Text>
+                    ) : (
+                      users
+                        .filter((items) => items.key == id)[0]
+                        .comments.map((items, key) => (
+                          <Text key={key}>{items}</Text>
+                        ))
+                    )}
+                  </ScrollView>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <TextInput
+                      placeholder="Add a comment"
+                      style={styles.commentInput}
+                      onChangeText={(comment) => setComment(comment)}
+                      ref={textInput}
+                    />
+                    <TouchableOpacity onPress={() => addComment()}>
+                      <Icon name="send" size={25} color="#5359D1" />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </RBSheet>
             </View>
           </ScrollView>
         </Animated.View>
@@ -391,7 +507,10 @@ const TabButton = (currentTab, setCurrentTab, title, image, navigation) => {
     <TouchableOpacity
       onPress={() => {
         if (title == "LogOut") {
-          navigation.navigate("Login");
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "Login" }],
+          });
           firebase.auth().signOut();
         } else {
           setCurrentTab(title);
@@ -444,7 +563,7 @@ const styles = StyleSheet.create({
   article: {
     backgroundColor: "#FFF",
     width: width / 1.1,
-    height: 285,
+
     borderRadius: 9,
     padding: 10,
     marginTop: 15,
@@ -462,5 +581,26 @@ const styles = StyleSheet.create({
     backgroundColor: "#5359D1",
     alignItems: "flex-start",
     justifyContent: "flex-start",
+  },
+  commentInput: {
+    height: 36,
+    width: "85%",
+    borderRadius: 36,
+    paddingHorizontal: 10,
+    backgroundColor: "#f1f1f1",
+    marginHorizontal: 10,
+  },
+  commentContainer: {
+    borderTopWidth: 0.5,
+    borderTopColor: "#ccc",
+    padding: 10,
+    height: "90%",
+  },
+  comments: {
+    fontSize: 15,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderTopWidth: 0.5,
+    borderTopColor: "#ccc",
   },
 });

@@ -39,7 +39,10 @@ export default function LoginScreen({ navigation }) {
       })
       .then(console.log(`${username} added as user`));
     setLoading(false);
-    navigation.navigate("Home");
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "Home" }],
+    });
   }
 
   function addAdminToDb() {
@@ -49,10 +52,15 @@ export default function LoginScreen({ navigation }) {
         name: username,
         email: email,
         access: "admin",
+        verified: false,
+        uid: String(firebase.auth().currentUser.uid),
       })
       .then(console.log(`${username} added as admin`));
     setLoading(false);
-    navigation.navigate("Home");
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "Home" }],
+    });
   }
 
   function signup() {
