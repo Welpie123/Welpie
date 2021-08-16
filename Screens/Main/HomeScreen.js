@@ -65,7 +65,7 @@ export default function App({ navigation }) {
   const scaleValue = useRef(new Animated.Value(1)).current;
   const closeButtonOffset = useRef(new Animated.Value(0)).current;
   const [loading, setLoading] = useState(true); // Set loading to true on component mount
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState({});
   const [tag, setTag] = useState("cars");
   const [id, setId] = useState("sXbZqNPGXLokfs2RsPGl");
   const [comment, setComment] = useState("");
@@ -179,8 +179,7 @@ export default function App({ navigation }) {
             <TouchableOpacity
               onPress={() => {
                 setId(items.key);
-                console.log("presssed");
-                refRBSheet.current.open();
+                navigation.navigate("Comments", { key: items.key });
               }}
             >
               <Image
@@ -386,7 +385,9 @@ export default function App({ navigation }) {
               </Text>
               <TouchableOpacity
                 style={{ paddingRight: 10 }}
-                onPress={() => change("animals")}
+                onPress={() => {
+                  change("animals");
+                }}
               >
                 <Text style={{ fontSize: 20, color: "white" }}>Animals</Text>
               </TouchableOpacity>
@@ -445,54 +446,6 @@ export default function App({ navigation }) {
                   verticalScrollIndicator={false}
                 />
               )}
-              <RBSheet
-                ref={refRBSheet}
-                closeOnDragDown={true}
-                dragFromTopOnly={true}
-                closeOnPressMask={true}
-                height={height / 2}
-                customStyles={{
-                  wrapper: {
-                    backgroundColor: "transparent",
-                  },
-                  draggableIcon: {
-                    backgroundColor: "#000",
-                  },
-                  container: {
-                    borderRadius: 20,
-                  },
-                }}
-              >
-                <View style={styles.commentContainer}>
-                  <ScrollView>
-                    {loading ? (
-                      <Text>Hello</Text>
-                    ) : (
-                      users
-                        .filter((items) => items.key == id)[0]
-                        .comments.map((items, key) => (
-                          <Text key={key}>{items}</Text>
-                        ))
-                    )}
-                  </ScrollView>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <TextInput
-                      placeholder="Add a comment"
-                      style={styles.commentInput}
-                      onChangeText={(comment) => setComment(comment)}
-                      ref={textInput}
-                    />
-                    <TouchableOpacity onPress={() => addComment()}>
-                      <Icon name="send" size={25} color="#5359D1" />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </RBSheet>
             </View>
           </ScrollView>
         </Animated.View>

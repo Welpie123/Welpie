@@ -13,6 +13,7 @@ import SearchScreen from "./Screens/Main/SearchScreen";
 import FollowingScreen from "./Screens/Main/FollowingScreen";
 import ProfileScreen from "./Screens/Main/ProfileScreen";
 import LoadingScreen from "./Screens/Loading/Loading";
+import CommentsScreen from "./Screens/Main/CommentsScreen";
 import * as key from "./Firebase";
 import { color } from "react-native-reanimated";
 
@@ -83,6 +84,7 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator headerMode="none" initialRouteName="Login">
         <Stack.Screen name="Loading" component={LoadingScreen} />
+        <Stack.Screen name="Comments" component={CommentsScreen} />
         <Stack.Screen
           name="Login"
           component={LoginScreen}

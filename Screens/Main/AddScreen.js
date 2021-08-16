@@ -204,6 +204,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#F1F1F1",
-    marginTop: StatusBar.currentHeight,
+    marginTop: StatusBar.currentHeight + 10,
   },
 });
