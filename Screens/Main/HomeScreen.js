@@ -67,7 +67,6 @@ export default function App({ navigation }) {
   const [loading, setLoading] = useState(true); // Set loading to true on component mount
   const [users, setUsers] = useState({});
   const [tag, setTag] = useState("cars");
-  const [id, setId] = useState("sXbZqNPGXLokfs2RsPGl");
   const [comment, setComment] = useState("");
 
   const change = (t) => {
@@ -161,8 +160,10 @@ export default function App({ navigation }) {
             </Text>
             <TouchableOpacity
               onPress={() => {
-                setId(items.key);
-                incLike();
+                const like = parseInt(items.likes) + 1;
+                db.collection("Articles")
+                  .doc(items.key)
+                  .update({ likes: String(like) });
               }}
             >
               <Image
@@ -173,12 +174,21 @@ export default function App({ navigation }) {
           </View>
 
           <View style={{ flexDirection: "row" }}>
+            <TouchableOpacity
+              onPress={() => {
+                refRBSheet.current.open();
+              }}
+            >
+              <Image
+                source={require("../../assets/comment.png")}
+                style={{ width: 15, height: 15 }}
+              />
+            </TouchableOpacity>
             <Text style={{ fontSize: 10, marginRight: 5, marginTop: 1 }}>
               {items.commentsNum}
             </Text>
             <TouchableOpacity
               onPress={() => {
-                setId(items.key);
                 navigation.navigate("Comments", { key: items.key });
               }}
             >
@@ -193,23 +203,12 @@ export default function App({ navigation }) {
     );
   }
 
-  function addComment() {
-    db.collection("Articles")
-      .doc(id)
-      .update({ comments: firebase.firestore.FieldValue.arrayUnion(comment) });
-    const commentsNum =
-      parseInt(users.filter((items) => items.key == id)[0].commentsNum) + 1;
-    db.collection("Articles")
-      .doc(id)
-      .update({ commentsNum: String(commentsNum) });
-  }
-
-  function incLike() {
-    const like =
-      parseInt(users.filter((items) => items.key == id)[0].likes) + 1;
-    db.collection("Articles")
-      .doc(id)
-      .update({ likes: String(like) });
+  function Comm({ items }) {
+    return (
+      <View>
+        <Text>{items.Name}</Text>
+      </View>
+    );
   }
 
   return (
@@ -446,6 +445,15 @@ export default function App({ navigation }) {
                   verticalScrollIndicator={false}
                 />
               )}
+              <RBSheet ref={refRBSheet}>
+                <FlatList
+                  data={users}
+                  renderItem={({ item }) => <Comm items={item} />}
+                  style={{ height: "100%", flexGrow: 0, marginTop: 5 }}
+                  showsVerticalScrollIndicator={false}
+                  verticalScrollIndicator={false}
+                />
+              </RBSheet>
             </View>
           </ScrollView>
         </Animated.View>
