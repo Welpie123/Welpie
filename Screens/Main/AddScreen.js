@@ -125,6 +125,11 @@ export default function AddScreen({ navigation }) {
               justifyContent: "center",
               alignItems: "center",
               marginBottom: 20,
+              elevation: 3,
+              shadowColor: "#5359D1",
+              shadowOffset: { width: -2, height: 4 },
+              shadowOpacity: 0.2,
+              shadowRadius: 3,
             }}
           >
             <TouchableOpacity onPress={() => pickImage()}>
@@ -159,6 +164,11 @@ export default function AddScreen({ navigation }) {
             alignSelf: "center",
             borderRadius: 17,
             marginBottom: 20,
+            elevation: 5,
+            shadowColor: "#5359D1",
+            shadowOffset: { width: -2, height: 4 },
+            shadowOpacity: 0.2,
+            shadowRadius: 3,
           }}
         />
         <View
@@ -168,6 +178,11 @@ export default function AddScreen({ navigation }) {
             width: width / 1.1,
             borderRadius: 36,
             padding: 20,
+            elevation: 3,
+            shadowColor: "#5359D1",
+            shadowOffset: { width: -2, height: 4 },
+            shadowOpacity: 0.2,
+            shadowRadius: 3,
           }}
         >
           <TextInput
@@ -186,6 +201,11 @@ export default function AddScreen({ navigation }) {
             justifyContent: "center",
             marginTop: 10,
             marginBottom: 30,
+            elevation: 3,
+            shadowColor: "#5359D1",
+            shadowOffset: { width: -2, height: 4 },
+            shadowOpacity: 0.2,
+            shadowRadius: 3,
           }}
           onPress={() => post()}
         >
