@@ -49,9 +49,17 @@ function AuthStack() {
         name="Add"
         component={AddScreen}
         options={{
-          tabBarIcon: () => (
-            <Icon name="add-circle" size={60} color="#7653D9" />
-          ),
+          tabBarIcon: () =>
+            Platform.OS == "ios" ? (
+              <Icon
+                name="add-circle"
+                size={60}
+                color="#7653D9"
+                style={{ height: 60 }}
+              />
+            ) : (
+              <Icon name="add-circle" size={60} color="#7653D9" />
+            ),
           title: "",
         }}
       />

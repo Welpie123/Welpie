@@ -13,7 +13,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   StatusBar,
-  TextInput,
+  Platform,
 } from "react-native";
 import moment from "moment";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -30,19 +30,10 @@ import logout from "../../assets/logout.png";
 // Menu
 import menu from "../../assets/menu.png";
 import close from "../../assets/close.png";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBCmheorYRo48fBID-mV4sm6aFH4OkleAw",
-  authDomain: "welpie.firebaseapp.com",
-  projectId: "welpie",
-  storageBucket: "welpie.appspot.com",
-  messagingSenderId: "110019844651",
-  appId: "1:110019844651:web:49dfa6edcbaa02fce4a86e",
-  measurementId: "G-198X4F9HD3",
-};
+import * as key from "../../Firebase";
 
 if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
+  firebase.initializeApp(key);
 }
 LogBox.ignoreLogs([`Setting a timer for a long period`]);
 LogBox.ignoreLogs([`VirtualizedLists`]);
@@ -68,9 +59,8 @@ export default function App({ navigation }) {
   const [comment, setComment] = useState("");
 
   const change = (t) => {
-    setTag(t);
     db.collection("Articles")
-      .where("tag", "==", tag)
+      .where("tag", "==", t)
       .onSnapshot((querySnapshot) => {
         const users = [];
 
@@ -87,7 +77,6 @@ export default function App({ navigation }) {
   };
 
   useEffect(() => {
-    console.log("run use effect");
     const subscriber = db
       .collection("Articles")
       .where("tag", "==", tag)
@@ -320,7 +309,7 @@ export default function App({ navigation }) {
               borderTopLeftRadius: 23,
               paddingLeft: 25,
               paddingBottom: 20,
-              paddingTop: StatusBar.currentHeight,
+              paddingTop: Platform.OS == "ios" ? 45 : StatusBar.currentHeight,
             }}
           >
             <View
@@ -407,7 +396,7 @@ export default function App({ navigation }) {
               </Text>
               <TouchableOpacity
                 style={{ paddingRight: 10 }}
-                onPress={() => setTag("animals")}
+                onPress={() => change("kitchen")}
               >
                 <Text style={{ fontSize: 20, color: "white" }}>Kitchen</Text>
               </TouchableOpacity>
@@ -416,7 +405,7 @@ export default function App({ navigation }) {
               </Text>
               <TouchableOpacity
                 style={{ paddingRight: 10 }}
-                onPress={() => setTag("animals")}
+                onPress={() => change("fashion")}
               >
                 <Text style={{ fontSize: 20, color: "white" }}>Fashion</Text>
               </TouchableOpacity>
@@ -425,7 +414,7 @@ export default function App({ navigation }) {
               </Text>
               <TouchableOpacity
                 style={{ paddingRight: 10 }}
-                onPress={() => setTag("animals")}
+                onPress={() => change("perfume")}
               >
                 <Text style={{ fontSize: 20, color: "white" }}>Perfume</Text>
               </TouchableOpacity>
@@ -527,10 +516,14 @@ const styles = StyleSheet.create({
   article: {
     backgroundColor: "#FFF",
     width: width / 1.1,
-
     borderRadius: 9,
     padding: 10,
     marginTop: 15,
+    shadowColor: "#5359D1",
+    shadowOffset: { width: -2, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 20,
   },
   profilePhoto: {
     width: 40,

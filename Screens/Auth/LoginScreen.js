@@ -57,9 +57,11 @@ export default function LoginScreen({ navigation }) {
       //navigation.navigate("Home");
     } else if (usersData.access == "user" && selectedIcon == "briefcase") {
       firebase.auth().signOut();
+      setLoading(false);
       setError("Account is set as USER");
     } else if (usersData.access == "admin" && selectedIcon == "user") {
       firebase.auth().signOut();
+      setLoading(false);
       setError("Account is set as BUSINESS");
     } else if (usersData.access == "admin" && selectedIcon == "briefcase") {
       console.log("navigate to home no");
@@ -153,7 +155,7 @@ export default function LoginScreen({ navigation }) {
           <Text style={styles.error}>{error}</Text>
           <View>
             {selectedIcon == "user" ? (
-              <Text style={styles.emailTxt}>Email</Text>
+              <Text style={styles.emailTxt}>Personal email</Text>
             ) : (
               <Text style={styles.emailTxt}>Business email</Text>
             )}

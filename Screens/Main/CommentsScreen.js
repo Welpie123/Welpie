@@ -9,6 +9,7 @@ import {
   StatusBar,
   TextInput,
   TouchableOpacity,
+  Platform,
 } from "react-native";
 import firebase from "firebase/app";
 import "firebase/storage";
@@ -31,15 +32,12 @@ export default function CommentsScreen({ route, navigation }) {
       .collection("Articles")
       .doc(key)
       .onSnapshot((documentSnapshot) => {
-        // console.log("User data: ", documentSnapshot.data());
         setUsers(documentSnapshot.data());
       });
 
     // Stop listening for updates when no longer required
     return () => subscriber();
   }, []);
-
-  console.log(users);
 
   function addComment() {
     const commNum = String(parseInt(users.commentsNum) + 1);
@@ -68,8 +66,15 @@ export default function CommentsScreen({ route, navigation }) {
         style={{ height: "100%", flexGrow: 0, marginTop: 5 }}
         showsVerticalScrollIndicator={false}
         verticalScrollIndicator={false}
+        keyExtractor={(item, index) => index.toString()}
       />
-      <View style={{ flexDirection: "row", marginBottom: 10 }}>
+      <View
+        style={{
+          flexDirection: "row",
+          marginBottom: 10,
+          bottom: Platform.OS == "ios" ? 20 : 0,
+        }}
+      >
         <TextInput
           placeholder="Add a comment"
           style={styles.commentInput}
@@ -94,7 +99,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: 10,
     borderTopWidth: 0.5,
-    paddingTop: StatusBar.currentHeight,
+    paddingTop: Platform.OS == "ios" ? 45 : StatusBar.currentHeight,
   },
   comments: {
     borderTopWidth: 0.5,
