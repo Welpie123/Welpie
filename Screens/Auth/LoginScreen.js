@@ -160,6 +160,7 @@ export default function LoginScreen({ navigation }) {
             <TextInput
               placeholder="Enter your email"
               style={styles.input}
+              keyboardType="email-address"
               onChangeText={(email) => setEmail(email)}
             />
             <Text style={styles.passTxt}>Password</Text>

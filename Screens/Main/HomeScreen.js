@@ -16,7 +16,6 @@ import {
   TextInput,
 } from "react-native";
 import moment from "moment";
-import RBSheet from "react-native-raw-bottom-sheet";
 import Icon from "react-native-vector-icons/FontAwesome";
 import firebase from "firebase/app";
 import "firebase/storage";
@@ -52,7 +51,6 @@ const db = firebase.firestore();
 const { height, width } = Dimensions.get("screen");
 
 export default function App({ navigation }) {
-  const refRBSheet = useRef();
   const textInput = useRef();
   const [currentTab, setCurrentTab] = useState("Home");
   // To get the curretn Status of menu ...
@@ -111,6 +109,7 @@ export default function App({ navigation }) {
   }, []);
 
   function Item({ items }) {
+    const [liked, setLiked] = useState(false);
     return (
       <View style={styles.article}>
         <View style={styles.header}>
@@ -160,7 +159,14 @@ export default function App({ navigation }) {
             </Text>
             <TouchableOpacity
               onPress={() => {
-                const like = parseInt(items.likes) + 1;
+                if (!liked) {
+                  var like = parseInt(items.likes) + 1;
+                  setLiked(true);
+                } else {
+                  var like = parseInt(items.likes) - 1;
+                  setLiked(false);
+                }
+
                 db.collection("Articles")
                   .doc(items.key)
                   .update({ likes: String(like) });
@@ -174,16 +180,6 @@ export default function App({ navigation }) {
           </View>
 
           <View style={{ flexDirection: "row" }}>
-            <TouchableOpacity
-              onPress={() => {
-                refRBSheet.current.open();
-              }}
-            >
-              <Image
-                source={require("../../assets/comment.png")}
-                style={{ width: 15, height: 15 }}
-              />
-            </TouchableOpacity>
             <Text style={{ fontSize: 10, marginRight: 5, marginTop: 1 }}>
               {items.commentsNum}
             </Text>
@@ -203,27 +199,43 @@ export default function App({ navigation }) {
     );
   }
 
-  function Comm({ items }) {
-    return (
-      <View>
-        <Text>{items.Name}</Text>
-      </View>
-    );
+  function ProfilePic() {
+    if (firebase.auth().currentUser.photoURL == null) {
+      return (
+        <View
+          style={{
+            width: 60,
+            height: 60,
+            borderRadius: 10,
+            marginTop: 20,
+            backgroundColor: "#cccccc",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Icon name="user" size={30} />
+        </View>
+      );
+    } else {
+      return (
+        <Image
+          source={profile}
+          style={{
+            width: 60,
+            height: 60,
+            borderRadius: 10,
+            marginTop: 20,
+          }}
+        />
+      );
+    }
   }
 
   return (
     <SafeAreaView style={styles.drawer}>
       <View style={{ justifyContent: "flex-start", padding: 15 }}>
         <View style={{ flexDirection: "row" }}>
-          <Image
-            source={profile}
-            style={{
-              width: 60,
-              height: 60,
-              borderRadius: 10,
-              marginTop: 20,
-            }}
-          ></Image>
+          <ProfilePic />
           <View style={{ marginLeft: 10 }}>
             <Text
               style={{
@@ -445,15 +457,6 @@ export default function App({ navigation }) {
                   verticalScrollIndicator={false}
                 />
               )}
-              <RBSheet ref={refRBSheet}>
-                <FlatList
-                  data={users}
-                  renderItem={({ item }) => <Comm items={item} />}
-                  style={{ height: "100%", flexGrow: 0, marginTop: 5 }}
-                  showsVerticalScrollIndicator={false}
-                  verticalScrollIndicator={false}
-                />
-              </RBSheet>
             </View>
           </ScrollView>
         </Animated.View>
