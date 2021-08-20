@@ -237,7 +237,7 @@ export default function App({ navigation }) {
               {firebase.auth().currentUser.displayName}
             </Text>
 
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
               <Text
                 style={{
                   marginTop: 6,

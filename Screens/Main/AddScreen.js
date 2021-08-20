@@ -170,6 +170,7 @@ export default function AddScreen({ navigation }) {
             shadowOpacity: 0.2,
             shadowRadius: 3,
           }}
+          dropDownContainerStyle={{ elevation: 5, width: width / 2, alignSelf: "center", }}
         />
         <View
           style={{

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -17,6 +17,7 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { set } from "react-native-reanimated";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -26,28 +27,37 @@ export default function LoginScreen({ navigation }) {
   const [error, setError] = useState("");
   const [selectedIcon, setSelected] = useState("user");
   const [loading, setLoading] = useState(false);
+  const [users, setUsers] = useState([]);
   const activeIcon = "#9c82e3";
   const inactiveIcon = "white";
+  const emailRef = useRef()
+  const passRef = useRef()
   const db = firebase.firestore();
-  var usersData;
 
-  async function userLoad() {
-    usersData = (
-      await db
-        .collection("test_users")
-        .doc(firebase.auth().currentUser.uid)
-        .get()
-    ).data();
-  }
+  useEffect(() => {
+    const subscriber = db
+      .collection("test_users")
+      .onSnapshot((querySnapshot) => {
+        const users = [];
 
-  async function checkData() {
-    await userLoad();
-    console.log(usersData);
-    /*if (usersData == undefined) {
-      setError("User not found");
-    }*/
+        querySnapshot.forEach((documentSnapshot) => {
+          users.push({
+            ...documentSnapshot.data(),
+            key: documentSnapshot.id,
+          });
+        });
 
-    if (usersData.access == "user" && selectedIcon == "user") {
+        setUsers(users);
+      });
+    // Unsubscribe from events when no longer in use
+    return () => subscriber();
+  }, []);
+
+  function checkData() {
+    const access = users.filter((item) => item.key == firebase.auth().currentUser.uid)[0].access;
+
+
+    if (access == "user" && selectedIcon == "user") {
       console.log("navigate to home yes");
       navigation.reset({
         index: 0,
@@ -55,15 +65,15 @@ export default function LoginScreen({ navigation }) {
       });
       setLoading(false);
       //navigation.navigate("Home");
-    } else if (usersData.access == "user" && selectedIcon == "briefcase") {
+    } else if (access == "user" && selectedIcon == "briefcase") {
       firebase.auth().signOut();
       setLoading(false);
       setError("Account is set as USER");
-    } else if (usersData.access == "admin" && selectedIcon == "user") {
+    } else if (uaccess == "admin" && selectedIcon == "user") {
       firebase.auth().signOut();
       setLoading(false);
       setError("Account is set as BUSINESS");
-    } else if (usersData.access == "admin" && selectedIcon == "briefcase") {
+    } else if (access == "admin" && selectedIcon == "briefcase") {
       console.log("navigate to home no");
       navigation.reset({
         index: 0,
@@ -73,6 +83,41 @@ export default function LoginScreen({ navigation }) {
     }
   }
 
+  async function checkAccess() {
+    setLoading(true)
+    var access;
+
+    if (email.includes("@") && email.includes(".com")) {
+      if (users.filter((item) => item.email == email).length == 0) {
+        setError("user not found")
+        setLoading(false)
+        return true;
+      } else { access = await users.filter((item) => item.email == email)[0].access; }
+    } else {
+      setError("Email badly formatted")
+      setLoading(false)
+      return true
+    }
+
+
+
+
+
+    if (access == "user" && selectedIcon == "user") {
+      console.log("logged in as user")
+      login()
+    } else if (access == "user" && selectedIcon == "briefcase") {
+      setError("Account is USER")
+      setLoading(false)
+    } else if (access == "admin" && selectedIcon == "briefcase") {
+      console.log("logged in as admin")
+      login()
+    } else if (access == "admin" && selectedIcon == "user") {
+      setError("Account is BUSINESS")
+      setLoading(false)
+    } else console.log("default case")
+  }
+
   function login() {
     firebase
       .auth()
@@ -80,8 +125,11 @@ export default function LoginScreen({ navigation }) {
       .then(() => {
         firebase.auth().onAuthStateChanged((user) => {
           if (user) {
-            console.log("looged in");
-            checkData();
+            setLoading(false)
+            navigation.reset({
+              index: 0,
+              routes: [{ name: "Home" }],
+            });
           }
         });
       })
@@ -89,7 +137,6 @@ export default function LoginScreen({ navigation }) {
         setError(error.message);
         setLoading(false);
       });
-    setLoading(true);
   }
 
   return (
@@ -112,6 +159,10 @@ export default function LoginScreen({ navigation }) {
             <TouchableOpacity
               onPress={() => {
                 setSelected("user");
+                emailRef.current.clear()
+                passRef.current.clear()
+                setEmail("")
+                setPassword("")
               }}
               style={{
                 backgroundColor:
@@ -129,6 +180,10 @@ export default function LoginScreen({ navigation }) {
             <TouchableOpacity
               onPress={() => {
                 setSelected("briefcase");
+                emailRef.current.clear()
+                passRef.current.clear()
+                setEmail("")
+                setPassword("")
               }}
               style={{
                 backgroundColor:
@@ -160,6 +215,7 @@ export default function LoginScreen({ navigation }) {
               <Text style={styles.emailTxt}>Business email</Text>
             )}
             <TextInput
+              ref={emailRef}
               placeholder="Enter your email"
               style={styles.input}
               keyboardType="email-address"
@@ -167,6 +223,7 @@ export default function LoginScreen({ navigation }) {
             />
             <Text style={styles.passTxt}>Password</Text>
             <TextInput
+              ref={passRef}
               placeholder="Enter your password"
               style={styles.input}
               onChangeText={(password) => setPassword(password)}
@@ -179,7 +236,8 @@ export default function LoginScreen({ navigation }) {
               Platform.OS === "ios" ? styles.buttonIOS : styles.buttonAndroid
             }
             onPress={() => {
-              login(email, password);
+              //login(email, password);
+              checkAccess()
             }}
           >
             <Text>Login</Text>

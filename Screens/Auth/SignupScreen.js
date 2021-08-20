@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   View,
   Text,
@@ -27,6 +27,9 @@ export default function LoginScreen({ navigation }) {
   const [loading, setLoading] = useState(false);
   const activeIcon = "#9c82e3";
   const inactiveIcon = "white";
+  const emailRef = useRef()
+  const passRef = useRef()
+  const nameRef = useRef()
   const db = firebase.firestore();
 
   function addUserToDb() {
@@ -79,9 +82,19 @@ export default function LoginScreen({ navigation }) {
       })
       .catch((error) => {
         setError(error.code);
+        setLoading(false)
       });
     //navigation.navigate("LoginLoad");
     setLoading(true);
+  }
+
+  function clearFields() {
+    emailRef.current.clear()
+    passRef.current.clear()
+    nameRef.current.clear()
+    setPassword("")
+    setEmail("")
+    setPassword("")
   }
 
   return (
@@ -119,6 +132,7 @@ export default function LoginScreen({ navigation }) {
                 <TouchableOpacity
                   onPress={() => {
                     setSelected("user");
+                    clearFields()
                   }}
                   style={{
                     backgroundColor:
@@ -136,6 +150,7 @@ export default function LoginScreen({ navigation }) {
                 <TouchableOpacity
                   onPress={() => {
                     setSelected("briefcase");
+                    clearFields()
                   }}
                   style={{
                     backgroundColor:
@@ -158,6 +173,7 @@ export default function LoginScreen({ navigation }) {
                   {selectedIcon == "user" ? "Username" : "Business name"}
                 </Text>
                 <TextInput
+                  ref={nameRef}
                   placeholder="Enter your name"
                   autoCapitalize="words"
                   style={styles.input}
@@ -165,12 +181,14 @@ export default function LoginScreen({ navigation }) {
                 />
                 <Text style={styles.emailTxt}>Email</Text>
                 <TextInput
+                  ref={emailRef}
                   placeholder="Enter your email"
                   style={styles.input}
                   onChangeText={(email) => setEmail(email)}
                 />
                 <Text style={styles.passTxt}>Password</Text>
                 <TextInput
+                  ref={passRef}
                   placeholder="Enter your password"
                   style={styles.input}
                   onChangeText={(password) => setPassword(password)}
