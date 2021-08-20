@@ -7,17 +7,14 @@ import {
   TextInput,
   TouchableOpacity,
   Dimensions,
-  StatusBar,
   ScrollView,
   Platform,
   ActivityIndicator,
-  Button,
 } from "react-native";
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { set } from "react-native-reanimated";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -30,8 +27,8 @@ export default function LoginScreen({ navigation }) {
   const [users, setUsers] = useState([]);
   const activeIcon = "#9c82e3";
   const inactiveIcon = "white";
-  const emailRef = useRef()
-  const passRef = useRef()
+  const emailRef = useRef();
+  const passRef = useRef();
   const db = firebase.firestore();
 
   useEffect(() => {
@@ -53,69 +50,37 @@ export default function LoginScreen({ navigation }) {
     return () => subscriber();
   }, []);
 
-  function checkData() {
-    const access = users.filter((item) => item.key == firebase.auth().currentUser.uid)[0].access;
-
-
-    if (access == "user" && selectedIcon == "user") {
-      console.log("navigate to home yes");
-      navigation.reset({
-        index: 0,
-        routes: [{ name: "Home" }],
-      });
-      setLoading(false);
-      //navigation.navigate("Home");
-    } else if (access == "user" && selectedIcon == "briefcase") {
-      firebase.auth().signOut();
-      setLoading(false);
-      setError("Account is set as USER");
-    } else if (uaccess == "admin" && selectedIcon == "user") {
-      firebase.auth().signOut();
-      setLoading(false);
-      setError("Account is set as BUSINESS");
-    } else if (access == "admin" && selectedIcon == "briefcase") {
-      console.log("navigate to home no");
-      navigation.reset({
-        index: 0,
-        routes: [{ name: "Home" }],
-      });
-      setLoading(false);
-    }
-  }
-
   async function checkAccess() {
-    setLoading(true)
+    setLoading(true);
     var access;
 
     if (email.includes("@") && email.includes(".com")) {
       if (users.filter((item) => item.email == email).length == 0) {
-        setError("user not found")
-        setLoading(false)
+        setError("user not found");
+        setLoading(false);
         return true;
-      } else { access = await users.filter((item) => item.email == email)[0].access; }
+      } else {
+        access = await users.filter((item) => item.email == email)[0].access;
+      }
     } else {
-      setError("Email badly formatted")
-      setLoading(false)
-      return true
+      setError("Email badly formatted");
+      setLoading(false);
+      return true;
     }
 
-
-
-
-
     if (access == "user" && selectedIcon == "user") {
-      console.log("logged in as user")
-      login()
+      console.log("logged in as user");
+      login();
     } else if (access == "user" && selectedIcon == "briefcase") {
-      setError("Account is USER")
-      setLoading(false)
+      setError("Account is USER");
+      setLoading(false);
     } else if (access == "admin" && selectedIcon == "briefcase") {
-      console.log("logged in as admin")
-      login()
+      console.log("logged in as admin");
+      login();
     } else if (access == "admin" && selectedIcon == "user") {
-      setError("Account is BUSINESS")
-      setLoading(false)
-    } else console.log("default case")
+      setError("Account is BUSINESS");
+      setLoading(false);
+    } else console.log("default case");
   }
 
   function login() {
@@ -125,7 +90,7 @@ export default function LoginScreen({ navigation }) {
       .then(() => {
         firebase.auth().onAuthStateChanged((user) => {
           if (user) {
-            setLoading(false)
+            setLoading(false);
             navigation.reset({
               index: 0,
               routes: [{ name: "Home" }],
@@ -159,10 +124,10 @@ export default function LoginScreen({ navigation }) {
             <TouchableOpacity
               onPress={() => {
                 setSelected("user");
-                emailRef.current.clear()
-                passRef.current.clear()
-                setEmail("")
-                setPassword("")
+                emailRef.current.clear();
+                passRef.current.clear();
+                setEmail("");
+                setPassword("");
               }}
               style={{
                 backgroundColor:
@@ -180,10 +145,10 @@ export default function LoginScreen({ navigation }) {
             <TouchableOpacity
               onPress={() => {
                 setSelected("briefcase");
-                emailRef.current.clear()
-                passRef.current.clear()
-                setEmail("")
-                setPassword("")
+                emailRef.current.clear();
+                passRef.current.clear();
+                setEmail("");
+                setPassword("");
               }}
               style={{
                 backgroundColor:
@@ -237,7 +202,7 @@ export default function LoginScreen({ navigation }) {
             }
             onPress={() => {
               //login(email, password);
-              checkAccess()
+              checkAccess();
             }}
           >
             <Text>Login</Text>
