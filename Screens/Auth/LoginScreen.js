@@ -50,8 +50,6 @@ export default function LoginScreen({ navigation }) {
     return () => subscriber();
   }, []);
 
-  lolololololol
-
   async function checkAccess() {
     setLoading(true);
     var access;
