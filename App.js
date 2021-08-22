@@ -28,7 +28,9 @@ const Drawer = createDrawerNavigator();
 
 //Tab bar navigation function
 function AuthStack() {
-  const tabOffsetValue = React.useRef(new Animated.Value(0)).current;
+  const tabOffsetValue = React.useRef(
+    new Animated.Value(getWidth() * 1)
+  ).current;
 
   function getWidth() {
     let width = Dimensions.get("window").width;
