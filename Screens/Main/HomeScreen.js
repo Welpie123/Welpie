@@ -97,6 +97,15 @@ export default function App({ navigation }) {
     return () => subscriber();
   }, []);
 
+  const tabOffsetValue = React.useRef(new Animated.Value(0.5)).current;
+  const widthOffsetValue = React.useRef(new Animated.Value(0)).current;
+
+  function getWidth() {
+    let width = Dimensions.get("window").width;
+    width = width - 60;
+    return width / 5;
+  }
+
   function Item({ items }) {
     const [liked, setLiked] = useState(false);
     return (
@@ -376,7 +385,17 @@ export default function App({ navigation }) {
             >
               <TouchableOpacity
                 style={{ paddingRight: 10 }}
-                onPress={() => change("cars")}
+                onPress={() => {
+                  change("cars");
+                  Animated.spring(tabOffsetValue, {
+                    toValue: 0.5,
+                    useNativeDriver: true,
+                  }).start();
+                  Animated.spring(widthOffsetValue, {
+                    toValue: 1,
+                    useNativeDriver: true,
+                  }).start();
+                }}
               >
                 <Text style={{ fontSize: 20, color: "white" }}>Cars</Text>
               </TouchableOpacity>
@@ -387,6 +406,14 @@ export default function App({ navigation }) {
                 style={{ paddingRight: 10 }}
                 onPress={() => {
                   change("animals");
+                  Animated.spring(tabOffsetValue, {
+                    toValue: getWidth() * 1.35,
+                    useNativeDriver: true,
+                  }).start();
+                  Animated.spring(widthOffsetValue, {
+                    toValue: 2,
+                    useNativeDriver: true,
+                  }).start();
                 }}
               >
                 <Text style={{ fontSize: 20, color: "white" }}>Animals</Text>
@@ -396,7 +423,17 @@ export default function App({ navigation }) {
               </Text>
               <TouchableOpacity
                 style={{ paddingRight: 10 }}
-                onPress={() => change("kitchen")}
+                onPress={() => {
+                  change("kitchen");
+                  Animated.spring(tabOffsetValue, {
+                    toValue: getWidth() * 3,
+                    useNativeDriver: true,
+                  }).start();
+                  Animated.spring(widthOffsetValue, {
+                    toValue: 1.9,
+                    useNativeDriver: true,
+                  }).start();
+                }}
               >
                 <Text style={{ fontSize: 20, color: "white" }}>Kitchen</Text>
               </TouchableOpacity>
@@ -405,7 +442,17 @@ export default function App({ navigation }) {
               </Text>
               <TouchableOpacity
                 style={{ paddingRight: 10 }}
-                onPress={() => change("fashion")}
+                onPress={() => {
+                  change("fashion");
+                  Animated.spring(tabOffsetValue, {
+                    toValue: getWidth() * 4.5,
+                    useNativeDriver: true,
+                  }).start();
+                  Animated.spring(widthOffsetValue, {
+                    toValue: 1.9,
+                    useNativeDriver: true,
+                  }).start();
+                }}
               >
                 <Text style={{ fontSize: 20, color: "white" }}>Fashion</Text>
               </TouchableOpacity>
@@ -414,10 +461,35 @@ export default function App({ navigation }) {
               </Text>
               <TouchableOpacity
                 style={{ paddingRight: 10 }}
-                onPress={() => change("perfume")}
+                onPress={() => {
+                  change("perfume");
+                  Animated.spring(tabOffsetValue, {
+                    toValue: getWidth() * 6.15,
+                    useNativeDriver: true,
+                  }).start();
+                  Animated.spring(widthOffsetValue, {
+                    toValue: 1.9,
+                    useNativeDriver: true,
+                  }).start();
+                }}
               >
                 <Text style={{ fontSize: 20, color: "white" }}>Perfume</Text>
               </TouchableOpacity>
+              <Animated.View
+                style={{
+                  backgroundColor: "#fff",
+                  height: 1,
+                  width: getWidth() - 20,
+                  position: "absolute",
+                  bottom: 0,
+                  left: 0,
+                  elevation: 4.1,
+                  transform: [
+                    { translateX: tabOffsetValue },
+                    { scaleX: widthOffsetValue },
+                  ],
+                }}
+              />
             </ScrollView>
           </View>
           <ScrollView

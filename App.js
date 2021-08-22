@@ -39,7 +39,6 @@ function AuthStack() {
   return (
     <NavigationContainer independent={true}>
       <Tab.Navigator
-        initialRouteName="Search"
         tabBarOptions={{
           style: {
             position: "absolute",
@@ -233,7 +232,7 @@ function AuthStack() {
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator headerMode="none" initialRouteName="Home">
+      <Stack.Navigator headerMode="none" initialRouteName="Login">
         <Stack.Screen name="Loading" component={LoadingScreen} />
         <Stack.Screen name="Comments" component={CommentsScreen} />
         <Stack.Screen
