@@ -57,6 +57,7 @@ export default function App({ navigation }) {
   const [users, setUsers] = useState({});
   const [tag, setTag] = useState("cars");
   const [comment, setComment] = useState("");
+  const [selected, setSelected] = useState("cars");
 
   const change = (t) => {
     db.collection("Articles")
@@ -96,9 +97,6 @@ export default function App({ navigation }) {
     // Unsubscribe from events when no longer in use
     return () => subscriber();
   }, []);
-
-  const tabOffsetValue = React.useRef(new Animated.Value(0.5)).current;
-  const widthOffsetValue = React.useRef(new Animated.Value(0)).current;
 
   function getWidth() {
     let width = Dimensions.get("window").width;
@@ -387,36 +385,42 @@ export default function App({ navigation }) {
                 style={{ paddingRight: 10 }}
                 onPress={() => {
                   change("cars");
-                  Animated.spring(tabOffsetValue, {
-                    toValue: 0.5,
-                    useNativeDriver: true,
-                  }).start();
-                  Animated.spring(widthOffsetValue, {
-                    toValue: 1,
-                    useNativeDriver: true,
-                  }).start();
+                  setSelected("cars");
                 }}
               >
-                <Text style={{ fontSize: 20, color: "white" }}>Cars</Text>
+                <Text
+                  style={{
+                    fontSize: 20,
+                    color: selected == "cars" ? "pink" : "white",
+                  }}
+                >
+                  Cars
+                </Text>
               </TouchableOpacity>
-              <Text style={{ fontSize: 20, color: "white", paddingRight: 10 }}>
+              <Text
+                style={{
+                  fontSize: 20,
+                  color: "white",
+                  paddingRight: 10,
+                }}
+              >
                 |
               </Text>
               <TouchableOpacity
                 style={{ paddingRight: 10 }}
                 onPress={() => {
                   change("animals");
-                  Animated.spring(tabOffsetValue, {
-                    toValue: getWidth() * 1.35,
-                    useNativeDriver: true,
-                  }).start();
-                  Animated.spring(widthOffsetValue, {
-                    toValue: 2,
-                    useNativeDriver: true,
-                  }).start();
+                  setSelected("animals");
                 }}
               >
-                <Text style={{ fontSize: 20, color: "white" }}>Animals</Text>
+                <Text
+                  style={{
+                    fontSize: 20,
+                    color: selected == "animals" ? "pink" : "white",
+                  }}
+                >
+                  Animals
+                </Text>
               </TouchableOpacity>
               <Text style={{ fontSize: 20, color: "white", paddingRight: 10 }}>
                 |
@@ -425,17 +429,17 @@ export default function App({ navigation }) {
                 style={{ paddingRight: 10 }}
                 onPress={() => {
                   change("kitchen");
-                  Animated.spring(tabOffsetValue, {
-                    toValue: getWidth() * 3,
-                    useNativeDriver: true,
-                  }).start();
-                  Animated.spring(widthOffsetValue, {
-                    toValue: 1.9,
-                    useNativeDriver: true,
-                  }).start();
+                  setSelected("kitchen");
                 }}
               >
-                <Text style={{ fontSize: 20, color: "white" }}>Kitchen</Text>
+                <Text
+                  style={{
+                    fontSize: 20,
+                    color: selected == "kitchen" ? "pink" : "white",
+                  }}
+                >
+                  Kitchen
+                </Text>
               </TouchableOpacity>
               <Text style={{ fontSize: 20, color: "white", paddingRight: 10 }}>
                 |
@@ -444,17 +448,17 @@ export default function App({ navigation }) {
                 style={{ paddingRight: 10 }}
                 onPress={() => {
                   change("fashion");
-                  Animated.spring(tabOffsetValue, {
-                    toValue: getWidth() * 4.5,
-                    useNativeDriver: true,
-                  }).start();
-                  Animated.spring(widthOffsetValue, {
-                    toValue: 1.9,
-                    useNativeDriver: true,
-                  }).start();
+                  setSelected("fashion");
                 }}
               >
-                <Text style={{ fontSize: 20, color: "white" }}>Fashion</Text>
+                <Text
+                  style={{
+                    fontSize: 20,
+                    color: selected == "fashion" ? "pink" : "white",
+                  }}
+                >
+                  Fashion
+                </Text>
               </TouchableOpacity>
               <Text style={{ fontSize: 20, color: "white", paddingRight: 10 }}>
                 |
@@ -463,33 +467,18 @@ export default function App({ navigation }) {
                 style={{ paddingRight: 10 }}
                 onPress={() => {
                   change("perfume");
-                  Animated.spring(tabOffsetValue, {
-                    toValue: getWidth() * 6.15,
-                    useNativeDriver: true,
-                  }).start();
-                  Animated.spring(widthOffsetValue, {
-                    toValue: 1.9,
-                    useNativeDriver: true,
-                  }).start();
+                  setSelected("perfume");
                 }}
               >
-                <Text style={{ fontSize: 20, color: "white" }}>Perfume</Text>
+                <Text
+                  style={{
+                    fontSize: 20,
+                    color: selected == "perfume" ? "pink" : "white",
+                  }}
+                >
+                  Perfume
+                </Text>
               </TouchableOpacity>
-              <Animated.View
-                style={{
-                  backgroundColor: "#fff",
-                  height: 1,
-                  width: getWidth() - 20,
-                  position: "absolute",
-                  bottom: 0,
-                  left: 0,
-                  elevation: 4.1,
-                  transform: [
-                    { translateX: tabOffsetValue },
-                    { scaleX: widthOffsetValue },
-                  ],
-                }}
-              />
             </ScrollView>
           </View>
           <ScrollView
