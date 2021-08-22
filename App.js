@@ -28,15 +28,14 @@ const Drawer = createDrawerNavigator();
 
 //Tab bar navigation function
 function AuthStack() {
-  const tabOffsetValue = React.useRef(
-    new Animated.Value(getWidth() * 1)
-  ).current;
+  const tabOffsetValue = React.useRef(new Animated.Value(0)).current;
 
   function getWidth() {
     let width = Dimensions.get("window").width;
     width = width - 60;
     return width / 5;
   }
+
   return (
     <NavigationContainer independent={true}>
       <Tab.Navigator
@@ -69,7 +68,6 @@ function AuthStack() {
                 style={{
                   alignItems: "center",
                   justifyContent: "center",
-                  top: "40%",
                 }}
               >
                 <Icon name="home-outline" size={25} color="black" />
@@ -99,7 +97,6 @@ function AuthStack() {
                 style={{
                   alignItems: "center",
                   justifyContent: "center",
-                  top: "40%",
                 }}
               >
                 <Icon name="search" size={25} color="black" />
@@ -129,12 +126,16 @@ function AuthStack() {
                 style={{
                   alignItems: "center",
                   justifyContent: "center",
+<<<<<<< HEAD
                   top: Platform.OS == "ios" ? "30%" : "0%",
+=======
+                  top: "0%",
+>>>>>>> 905706393a63e9eeb165dcb9209d10248e7e79f4
                 }}
               >
                 <Icon
                   name="add-circle"
-                  size={60}
+                  size={Platform.OS == "ios" ? 60 : 50}
                   color="#7653D9"
                   style={{ height: 60 }}
                 />
@@ -161,7 +162,6 @@ function AuthStack() {
                 style={{
                   alignItems: "center",
                   justifyContent: "center",
-                  top: "40%",
                 }}
               >
                 <Icon name="heart-outline" size={25} color="black" />
@@ -191,7 +191,6 @@ function AuthStack() {
                 style={{
                   alignItems: "center",
                   justifyContent: "center",
-                  top: "40%",
                 }}
               >
                 <Icon name="person-outline" size={25} color="black" />
@@ -216,11 +215,12 @@ function AuthStack() {
       <Animated.View
         style={{
           backgroundColor: "#7653D9",
-          height: 2,
+          height: 1,
           width: getWidth() - 20,
           position: "absolute",
           bottom: 30,
           left: 40,
+          elevation: 4.1,
           transform: [{ translateX: tabOffsetValue }],
         }}
       />
