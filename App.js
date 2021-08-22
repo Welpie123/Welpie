@@ -68,6 +68,7 @@ function AuthStack() {
                 style={{
                   alignItems: "center",
                   justifyContent: "center",
+                  top: Platform.OS == "ios" ? "40%" : "0%",
                 }}
               >
                 <Icon name="home-outline" size={25} color="black" />
@@ -97,6 +98,7 @@ function AuthStack() {
                 style={{
                   alignItems: "center",
                   justifyContent: "center",
+                  top: Platform.OS == "ios" ? "40%" : "0%",
                 }}
               >
                 <Icon name="search" size={25} color="black" />
@@ -158,6 +160,7 @@ function AuthStack() {
                 style={{
                   alignItems: "center",
                   justifyContent: "center",
+                  top: Platform.OS == "ios" ? "40%" : "0%",
                 }}
               >
                 <Icon name="heart-outline" size={25} color="black" />
@@ -187,6 +190,7 @@ function AuthStack() {
                 style={{
                   alignItems: "center",
                   justifyContent: "center",
+                  top: Platform.OS == "ios" ? "40%" : "0%",
                 }}
               >
                 <Icon name="person-outline" size={25} color="black" />
