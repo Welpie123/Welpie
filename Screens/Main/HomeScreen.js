@@ -264,7 +264,7 @@ export default function App({ navigation }) {
           {TabButton(currentTab, setCurrentTab, "About", about, navigation)}
         </View>
 
-        <View>
+        <View style={{ marginBottom: height * 0.15 }}>
           {TabButton(currentTab, setCurrentTab, "LogOut", logout, navigation)}
         </View>
       </View>
@@ -422,7 +422,7 @@ export default function App({ navigation }) {
           </View>
           <ScrollView
             showsVerticalScrollIndicator={false}
-            style={{ height: "85%" }}
+            style={{ height: "79%" }}
           >
             <View
               style={{

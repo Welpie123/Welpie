@@ -16,7 +16,7 @@ import LoadingScreen from "./Screens/Loading/Loading";
 import CommentsScreen from "./Screens/Main/CommentsScreen";
 import * as key from "./Firebase";
 import { color } from "react-native-reanimated";
-import { View, Text, Animated, Dimensions } from "react-native";
+import { View, Text, Animated, Dimensions, Platform } from "react-native";
 
 if (!firebase.apps.length) {
   firebase.initializeApp(key.firebaseConfig);
@@ -55,6 +55,7 @@ function AuthStack() {
               height: 10,
             },
             elevation: 4,
+            height: "8%",
           },
           showLabel: false,
         }}
@@ -128,7 +129,7 @@ function AuthStack() {
                 style={{
                   alignItems: "center",
                   justifyContent: "center",
-                  top: "30%",
+                  top: Platform.OS == "ios" ? "30%" : "0%",
                 }}
               >
                 <Icon
@@ -142,6 +143,14 @@ function AuthStack() {
 
             title: "",
           }}
+          listeners={({ NavigationContainer, route }) => ({
+            tabPress: (e) => {
+              Animated.spring(tabOffsetValue, {
+                toValue: getWidth() * 2,
+                useNativeDriver: true,
+              }).start();
+            },
+          })}
         />
         <Tab.Screen
           name="Following"
