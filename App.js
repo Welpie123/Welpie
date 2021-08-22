@@ -126,11 +126,7 @@ function AuthStack() {
                 style={{
                   alignItems: "center",
                   justifyContent: "center",
-<<<<<<< HEAD
                   top: Platform.OS == "ios" ? "30%" : "0%",
-=======
-                  top: "0%",
->>>>>>> 905706393a63e9eeb165dcb9209d10248e7e79f4
                 }}
               >
                 <Icon
