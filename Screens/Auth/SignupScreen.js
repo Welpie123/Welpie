@@ -62,7 +62,7 @@ export default function LoginScreen({ navigation }) {
     setLoading(false);
     navigation.reset({
       index: 0,
-      routes: [{ name: "Home" }],
+      routes: [{ name: "Verify" }],
     });
   }
 
@@ -141,6 +141,7 @@ export default function LoginScreen({ navigation }) {
                     justifyContent: "center",
                     alignItems: "center",
                     borderTopLeftRadius: 20,
+                    elevation: selectedIcon == 'user' ? 20 : 0
                   }}
                 >
                   <View>
@@ -159,6 +160,7 @@ export default function LoginScreen({ navigation }) {
                     alignItems: "center",
                     justifyContent: "center",
                     borderTopRightRadius: 20,
+                    elevation: selectedIcon == 'briefcase' ? 20 : 0
                   }}
                 >
                   <View>
@@ -182,6 +184,7 @@ export default function LoginScreen({ navigation }) {
                 <Text style={styles.emailTxt}>Email</Text>
                 <TextInput
                   ref={emailRef}
+                  keyboardType="email-address"
                   placeholder="Enter your email"
                   style={styles.input}
                   onChangeText={(email) => setEmail(email)}
@@ -231,7 +234,7 @@ const styles = StyleSheet.create({
   },
   containerInnerBottomBox: {
     backgroundColor: "white",
-
+    elevation: 10,
     width: width / 1.1,
     paddingLeft: height / 25,
     paddingRight: height / 25,
@@ -265,6 +268,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: height / 100,
+    elevation: 3
   },
   input: {
     borderColor: "black",
@@ -283,16 +287,16 @@ const styles = StyleSheet.create({
     marginTop: height / 90,
     fontSize: 20,
     fontStyle: "italic",
-    marginBottom: height / 100,
+    marginBottom: height / 200,
   },
   emailTxt: {
     fontSize: 20,
     fontStyle: "italic",
-    marginBottom: height / 100,
+    marginBottom: height / 200,
   },
   passTxt: {
     fontSize: 20,
     fontStyle: "italic",
-    marginBottom: height / 100,
+    marginBottom: height / 200,
   },
 });

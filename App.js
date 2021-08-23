@@ -2,7 +2,7 @@ import * as React from "react";
 import Icon from "react-native-vector-icons/Ionicons";
 import firebase from "firebase/app";
 import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
+import { createStackNavigator, CardStyleInterpolators } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import LoginScreen from "./Screens/Auth/LoginScreen";
@@ -14,6 +14,7 @@ import FollowingScreen from "./Screens/Main/FollowingScreen";
 import ProfileScreen from "./Screens/Main/ProfileScreen";
 import LoadingScreen from "./Screens/Loading/Loading";
 import CommentsScreen from "./Screens/Main/CommentsScreen";
+import VerifyScreen from "./Screens/Loading/VerifyScreen";
 import * as key from "./Firebase";
 import { color } from "react-native-reanimated";
 import { View, Text, Animated, Dimensions, Platform } from "react-native";
@@ -236,14 +237,26 @@ export default function App() {
         <Stack.Screen
           name="Login"
           component={LoginScreen}
-          options={{ animationEnabled: false }}
+          options={{
+            animationEnabled: true,
+            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+          }}
         />
-        <Stack.Screen name="Home" component={AuthStack} />
+        <Stack.Screen name="Home" component={AuthStack} options={{
+          animationEnabled: true,
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+        }} />
         <Stack.Screen
           name="Signup"
           component={SignupScreen}
           options={{ animationEnabled: false }}
         />
+        <Stack.Screen
+          name="Verify"
+          component={VerifyScreen}
+          options={{
+            cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS
+          }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

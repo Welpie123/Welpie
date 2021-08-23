@@ -136,6 +136,7 @@ export default function LoginScreen({ navigation }) {
                 justifyContent: "center",
                 alignItems: "center",
                 borderTopLeftRadius: 20,
+                elevation: selectedIcon == 'user' ? 20 : 0
               }}
             >
               <View>
@@ -157,6 +158,7 @@ export default function LoginScreen({ navigation }) {
                 alignItems: "center",
                 justifyContent: "center",
                 borderTopRightRadius: 20,
+                elevation: selectedIcon == 'briefcase' ? 20 : 0
               }}
             >
               <View>
@@ -245,6 +247,7 @@ const styles = StyleSheet.create({
     marginLeft: width / 20,
     borderRadius: 20,
     alignItems: "center",
+    elevation: 10
   },
   containerfooter: {
     alignItems: "center",
@@ -279,6 +282,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: height / 50,
+    elevation: 3
   },
   input: {
     borderColor: "black",
