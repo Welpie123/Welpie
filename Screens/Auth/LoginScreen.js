@@ -295,6 +295,7 @@ const styles = StyleSheet.create({
   error: { color: "red" },
   emailTxt: {
     marginTop: height / 50,
+    marginBottom: height / 100,
     fontSize: 20,
     fontStyle: "italic",
   },

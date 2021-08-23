@@ -483,7 +483,7 @@ export default function App({ navigation }) {
           </View>
           <ScrollView
             showsVerticalScrollIndicator={false}
-            style={{ height: "79%" }}
+            style={{ height: showMenu ? "85%" : "100%" }}
           >
             <View
               style={{
@@ -502,7 +502,12 @@ export default function App({ navigation }) {
                 <FlatList
                   data={users}
                   renderItem={({ item }) => <Item items={item} />}
-                  style={{ height: "100%", flexGrow: 0, marginTop: 5 }}
+                  style={{
+                    height: "100%",
+                    flexGrow: 0,
+                    marginTop: 5,
+                    paddingBottom: showMenu ? "0%" : "42%",
+                  }}
                   showsVerticalScrollIndicator={false}
                   verticalScrollIndicator={false}
                 />
