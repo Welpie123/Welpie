@@ -15,7 +15,7 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { FloatingLabelInput } from "react-native-floating-label-input"
+import { FloatingLabelInput } from "react-native-floating-label-input";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -81,7 +81,7 @@ export default function LoginScreen({ navigation }) {
       if (verify == false) {
         console.log("account not verified");
         setLoading(false);
-        setError("Account not verified")
+        setError("Account not verified");
       } else {
         console.log("logged in as admin");
         login();
@@ -143,7 +143,7 @@ export default function LoginScreen({ navigation }) {
                 justifyContent: "center",
                 alignItems: "center",
                 borderTopLeftRadius: 20,
-                elevation: selectedIcon == 'user' ? 20 : 0
+                elevation: selectedIcon == "user" ? 20 : 0,
               }}
             >
               <View>
@@ -163,7 +163,7 @@ export default function LoginScreen({ navigation }) {
                 alignItems: "center",
                 justifyContent: "center",
                 borderTopRightRadius: 20,
-                elevation: selectedIcon == 'briefcase' ? 20 : 0
+                elevation: selectedIcon == "briefcase" ? 20 : 0,
               }}
             >
               <View>
@@ -180,7 +180,13 @@ export default function LoginScreen({ navigation }) {
           )}
 
           <Text style={styles.error}>{error}</Text>
-          <View style={{ alignItems: "center", justifyContent: "center", paddingHorizontal: "15%" }}>
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              paddingHorizontal: "15%",
+            }}
+          >
             {/* { {selectedIcon == "user" ? (
               <Text style={styles.emailTxt}>Personal email</Text>
             ) : (
@@ -194,20 +200,42 @@ export default function LoginScreen({ navigation }) {
               onChangeText={(email) => setEmail(email)}
             />} */}
             <FloatingLabelInput
-              label={selectedIcon == "user" ? "Personal email" : "Business email"}
+              label={
+                selectedIcon == "user" ? "Personal email" : "Business email"
+              }
               keyboardType={"email-address"}
-              containerStyles={{ borderColor: "black", borderBottomWidth: 1, backgroundColor: "white", height: height / 12 }}
-              customLabelStyles={{ fontSizeFocused: 20, fontSizeBlurred: 20, colorFocused: "black", colorBlurred: "black" }}
+              containerStyles={{
+                borderColor: "black",
+                borderBottomWidth: 1,
+                backgroundColor: "white",
+                height: height / 12,
+              }}
+              customLabelStyles={{
+                fontSizeFocused: 20,
+                fontSizeBlurred: 20,
+                colorFocused: "black",
+                colorBlurred: "black",
+              }}
               labelStyles={{ color: "black", marginHorizontal: 0 }}
               inputStyles={{ marginBottom: "-15%" }}
               value={email}
               onChangeText={(value) => setEmail(value)}
             />
             <FloatingLabelInput
-              label={'Password'}
+              label={"Password"}
               isPassword={true}
-              containerStyles={{ borderColor: "black", borderBottomWidth: 1, backgroundColor: "white", height: height / 12 }}
-              customLabelStyles={{ fontSizeFocused: 20, fontSizeBlurred: 20, colorFocused: "black", colorBlurred: "black" }}
+              containerStyles={{
+                borderColor: "black",
+                borderBottomWidth: 1,
+                backgroundColor: "white",
+                height: height / 12,
+              }}
+              customLabelStyles={{
+                fontSizeFocused: 20,
+                fontSizeBlurred: 20,
+                colorFocused: "black",
+                colorBlurred: "black",
+              }}
               labelStyles={{ color: "black", marginHorizontal: 0 }}
               inputStyles={{ marginBottom: "-15%" }}
               value={password}
@@ -237,7 +265,11 @@ export default function LoginScreen({ navigation }) {
         </View>
         <View style={styles.containerfooter}>
           <Text>Don't have an account?</Text>
-          <TouchableOpacity onPress={() => navigation.navigate("Signup")}>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.reset({ index: 0, routes: [{ name: "Signup" }] })
+            }
+          >
             <Text style={styles.inputFooter}>Signup</Text>
           </TouchableOpacity>
         </View>
@@ -272,7 +304,7 @@ const styles = StyleSheet.create({
     marginLeft: width / 20,
     borderRadius: 20,
     alignItems: "center",
-    elevation: 10
+    elevation: 10,
   },
   containerfooter: {
     alignItems: "center",
@@ -307,7 +339,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: height / 25,
-    elevation: 3
+    elevation: 3,
   },
   input: {
     borderColor: "black",

@@ -28,9 +28,9 @@ export default function LoginScreen({ navigation }) {
   const [loading, setLoading] = useState(false);
   const activeIcon = "#9c82e3";
   const inactiveIcon = "white";
-  const emailRef = useRef()
-  const passRef = useRef()
-  const nameRef = useRef()
+  const emailRef = useRef();
+  const passRef = useRef();
+  const nameRef = useRef();
   const db = firebase.firestore();
 
   function addUserToDb() {
@@ -47,10 +47,12 @@ export default function LoginScreen({ navigation }) {
       index: 0,
       routes: [{ name: "Home" }],
     });
+    return true;
   }
 
-  function addAdminToDb() {
-    db.collection("test_users")
+  async function addAdminToDb() {
+    await db
+      .collection("test_users")
       .doc(firebase.auth().currentUser.uid)
       .set({
         name: username,
@@ -59,12 +61,17 @@ export default function LoginScreen({ navigation }) {
         verified: false,
         uid: String(firebase.auth().currentUser.uid),
       })
-      .then(console.log(`${username} added as admin`));
+      .then(() => {
+        console.log(`${username} added as admin`);
+        firebase.auth().signOut();
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "Verify" }],
+        });
+      });
     setLoading(false);
-    navigation.reset({
-      index: 0,
-      routes: [{ name: "Verify" }],
-    });
+
+    return true;
   }
 
   function signup() {
@@ -72,27 +79,23 @@ export default function LoginScreen({ navigation }) {
       .auth()
       .createUserWithEmailAndPassword(email, password)
       .then(() => {
-        firebase.auth().onAuthStateChanged((user) => {
-          if (user) {
-            firebase
-              .auth()
-              .currentUser.updateProfile({ displayName: username });
-            selectedIcon == "user" ? addUserToDb() : addAdminToDb();
-          }
-        });
+        firebase.auth().currentUser.updateProfile({ displayName: username });
+        console.log("i was called");
+        selectedIcon == "user" ? addUserToDb() : addAdminToDb();
       })
       .catch((error) => {
         setError(error.code);
-        setLoading(false)
+        setLoading(false);
       });
     //navigation.navigate("LoginLoad");
     setLoading(true);
+    return true;
   }
 
   function clearFields() {
-    setUser("")
-    setEmail("")
-    setPassword("")
+    setUser("");
+    setEmail("");
+    setPassword("");
   }
 
   return (
@@ -130,7 +133,7 @@ export default function LoginScreen({ navigation }) {
                 <TouchableOpacity
                   onPress={() => {
                     setSelected("user");
-                    clearFields()
+                    clearFields();
                   }}
                   style={{
                     backgroundColor:
@@ -139,7 +142,7 @@ export default function LoginScreen({ navigation }) {
                     justifyContent: "center",
                     alignItems: "center",
                     borderTopLeftRadius: 20,
-                    elevation: selectedIcon == 'user' ? 20 : 0
+                    elevation: selectedIcon == "user" ? 20 : 0,
                   }}
                 >
                   <View>
@@ -149,7 +152,7 @@ export default function LoginScreen({ navigation }) {
                 <TouchableOpacity
                   onPress={() => {
                     setSelected("briefcase");
-                    clearFields()
+                    clearFields();
                   }}
                   style={{
                     backgroundColor:
@@ -158,7 +161,7 @@ export default function LoginScreen({ navigation }) {
                     alignItems: "center",
                     justifyContent: "center",
                     borderTopRightRadius: 20,
-                    elevation: selectedIcon == 'briefcase' ? 20 : 0
+                    elevation: selectedIcon == "briefcase" ? 20 : 0,
                   }}
                 >
                   <View>
@@ -168,11 +171,27 @@ export default function LoginScreen({ navigation }) {
               </View>
               <Text style={{ fontSize: 25, fontWeight: "bold" }}>Signup</Text>
               <Text style={styles.error}>{error}</Text>
-              <View style={{ alignItems: "center", justifyContent: "center", paddingHorizontal: "15%" }}>
+              <View
+                style={{
+                  alignItems: "center",
+                  justifyContent: "center",
+                  paddingHorizontal: "15%",
+                }}
+              >
                 <FloatingLabelInput
                   label={selectedIcon == "user" ? "Username" : "Business name"}
-                  containerStyles={{ borderColor: "black", borderBottomWidth: 1, backgroundColor: "white", height: height / 12 }}
-                  customLabelStyles={{ fontSizeFocused: 20, fontSizeBlurred: 20, colorFocused: "black", colorBlurred: "black" }}
+                  containerStyles={{
+                    borderColor: "black",
+                    borderBottomWidth: 1,
+                    backgroundColor: "white",
+                    height: height / 12,
+                  }}
+                  customLabelStyles={{
+                    fontSizeFocused: 20,
+                    fontSizeBlurred: 20,
+                    colorFocused: "black",
+                    colorBlurred: "black",
+                  }}
                   labelStyles={{ color: "black", marginHorizontal: 0 }}
                   inputStyles={{ marginBottom: "-15%" }}
                   value={username}
@@ -181,8 +200,18 @@ export default function LoginScreen({ navigation }) {
                 <FloatingLabelInput
                   label={"Email"}
                   keyboardType={"email-address"}
-                  containerStyles={{ borderColor: "black", borderBottomWidth: 1, backgroundColor: "white", height: height / 12 }}
-                  customLabelStyles={{ fontSizeFocused: 20, fontSizeBlurred: 20, colorFocused: "black", colorBlurred: "black" }}
+                  containerStyles={{
+                    borderColor: "black",
+                    borderBottomWidth: 1,
+                    backgroundColor: "white",
+                    height: height / 12,
+                  }}
+                  customLabelStyles={{
+                    fontSizeFocused: 20,
+                    fontSizeBlurred: 20,
+                    colorFocused: "black",
+                    colorBlurred: "black",
+                  }}
                   labelStyles={{ color: "black", marginHorizontal: 0 }}
                   inputStyles={{ marginBottom: "-15%" }}
                   value={email}
@@ -191,8 +220,18 @@ export default function LoginScreen({ navigation }) {
                 <FloatingLabelInput
                   label={"Password"}
                   isPassword={true}
-                  containerStyles={{ borderColor: "black", borderBottomWidth: 1, backgroundColor: "white", height: height / 12 }}
-                  customLabelStyles={{ fontSizeFocused: 20, fontSizeBlurred: 20, colorFocused: "black", colorBlurred: "black" }}
+                  containerStyles={{
+                    borderColor: "black",
+                    borderBottomWidth: 1,
+                    backgroundColor: "white",
+                    height: height / 12,
+                  }}
+                  customLabelStyles={{
+                    fontSizeFocused: 20,
+                    fontSizeBlurred: 20,
+                    colorFocused: "black",
+                    colorBlurred: "black",
+                  }}
                   labelStyles={{ color: "black", marginHorizontal: 0 }}
                   inputStyles={{ marginBottom: "-15%" }}
                   value={password}
@@ -269,7 +308,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: height / 25,
-    elevation: 3
+    elevation: 3,
   },
   input: {
     borderColor: "black",
