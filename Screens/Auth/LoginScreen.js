@@ -15,6 +15,7 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { FloatingLabelInput } from "react-native-floating-label-input"
 
 const { width, height } = Dimensions.get("screen");
 
@@ -53,6 +54,7 @@ export default function LoginScreen({ navigation }) {
   async function checkAccess() {
     setLoading(true);
     var access;
+    var verify;
 
     if (email.includes("@") && email.includes(".com")) {
       if (users.filter((item) => item.email == email).length == 0) {
@@ -61,6 +63,7 @@ export default function LoginScreen({ navigation }) {
         return true;
       } else {
         access = await users.filter((item) => item.email == email)[0].access;
+        verify = await users.filter((item) => item.email == email)[0].verified;
       }
     } else {
       setError("Email badly formatted");
@@ -75,8 +78,14 @@ export default function LoginScreen({ navigation }) {
       setError("Account is USER");
       setLoading(false);
     } else if (access == "admin" && selectedIcon == "briefcase") {
-      console.log("logged in as admin");
-      login();
+      if (verify == false) {
+        console.log("account not verified");
+        setLoading(false);
+        setError("Account not verified")
+      } else {
+        console.log("logged in as admin");
+        login();
+      }
     } else if (access == "admin" && selectedIcon == "user") {
       setError("Account is BUSINESS");
       setLoading(false);
@@ -124,8 +133,6 @@ export default function LoginScreen({ navigation }) {
             <TouchableOpacity
               onPress={() => {
                 setSelected("user");
-                emailRef.current.clear();
-                passRef.current.clear();
                 setEmail("");
                 setPassword("");
               }}
@@ -146,8 +153,6 @@ export default function LoginScreen({ navigation }) {
             <TouchableOpacity
               onPress={() => {
                 setSelected("briefcase");
-                emailRef.current.clear();
-                passRef.current.clear();
                 setEmail("");
                 setPassword("");
               }}
@@ -175,8 +180,8 @@ export default function LoginScreen({ navigation }) {
           )}
 
           <Text style={styles.error}>{error}</Text>
-          <View>
-            {selectedIcon == "user" ? (
+          <View style={{ alignItems: "center", justifyContent: "center", paddingHorizontal: "15%" }}>
+            {/* { {selectedIcon == "user" ? (
               <Text style={styles.emailTxt}>Personal email</Text>
             ) : (
               <Text style={styles.emailTxt}>Business email</Text>
@@ -187,15 +192,35 @@ export default function LoginScreen({ navigation }) {
               style={styles.input}
               keyboardType="email-address"
               onChangeText={(email) => setEmail(email)}
+            />} */}
+            <FloatingLabelInput
+              label={selectedIcon == "user" ? "Personal email" : "Business email"}
+              keyboardType={"email-address"}
+              containerStyles={{ borderColor: "black", borderBottomWidth: 1, backgroundColor: "white", height: height / 12 }}
+              customLabelStyles={{ fontSizeFocused: 20, fontSizeBlurred: 20, colorFocused: "black", colorBlurred: "black" }}
+              labelStyles={{ color: "black", marginHorizontal: 0 }}
+              inputStyles={{ marginBottom: "-15%" }}
+              value={email}
+              onChangeText={(value) => setEmail(value)}
             />
-            <Text style={styles.passTxt}>Password</Text>
+            <FloatingLabelInput
+              label={'Password'}
+              isPassword={true}
+              containerStyles={{ borderColor: "black", borderBottomWidth: 1, backgroundColor: "white", height: height / 12 }}
+              customLabelStyles={{ fontSizeFocused: 20, fontSizeBlurred: 20, colorFocused: "black", colorBlurred: "black" }}
+              labelStyles={{ color: "black", marginHorizontal: 0 }}
+              inputStyles={{ marginBottom: "-15%" }}
+              value={password}
+              onChangeText={(value) => setPassword(value)}
+            />
+            {/* {<Text style={styles.passTxt}>Password</Text>
             <TextInput
               ref={passRef}
               placeholder="Enter your password"
               style={styles.input}
               onChangeText={(password) => setPassword(password)}
               secureTextEntry
-            />
+            />} */}
           </View>
 
           <TouchableOpacity
@@ -281,7 +306,7 @@ const styles = StyleSheet.create({
     height: height / 25,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: height / 50,
+    marginTop: height / 25,
     elevation: 3
   },
   input: {

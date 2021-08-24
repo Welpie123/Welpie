@@ -8,7 +8,6 @@ export default function VerifyScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <StatusBar />
       <Onboarding
         pages={[
           {

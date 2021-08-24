@@ -5612,6 +5612,11 @@ react-native-dropdown-picker@^5.1.23:
   dependencies:
     react-native-gesture-handler "*"
 
+react-native-floating-label-input@^1.3.11:
+  version "1.3.11"
+  resolved "https://registry.yarnpkg.com/react-native-floating-label-input/-/react-native-floating-label-input-1.3.11.tgz#3d56aef01038e8c2281e48b0c6b32ad6bcd543a9"
+  integrity sha512-fOdVHy81As1z6D42RM0dbTg1ni3VcnzoBpo6Mg5YNWcQFYvpQeGM0lg7XUiOTb9VbHuxO4SZ/nFSSILuaLnvyA==
+
 react-native-gesture-handler@*, react-native-gesture-handler@^1.10.3:
   version "1.10.3"
   resolved "https://registry.yarnpkg.com/react-native-gesture-handler/-/react-native-gesture-handler-1.10.3.tgz#942bbf2963bbf49fa79593600ee9d7b5dab3cfc0"

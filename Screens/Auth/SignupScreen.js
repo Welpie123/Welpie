@@ -15,6 +15,7 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { FloatingLabelInput } from "react-native-floating-label-input";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -89,10 +90,7 @@ export default function LoginScreen({ navigation }) {
   }
 
   function clearFields() {
-    emailRef.current.clear()
-    passRef.current.clear()
-    nameRef.current.clear()
-    setPassword("")
+    setUser("")
     setEmail("")
     setPassword("")
   }
@@ -170,32 +168,35 @@ export default function LoginScreen({ navigation }) {
               </View>
               <Text style={{ fontSize: 25, fontWeight: "bold" }}>Signup</Text>
               <Text style={styles.error}>{error}</Text>
-              <View>
-                <Text style={styles.userTxt}>
-                  {selectedIcon == "user" ? "Username" : "Business name"}
-                </Text>
-                <TextInput
-                  ref={nameRef}
-                  placeholder="Enter your name"
-                  autoCapitalize="words"
-                  style={styles.input}
-                  onChangeText={(username) => setUser(username)}
+              <View style={{ alignItems: "center", justifyContent: "center", paddingHorizontal: "15%" }}>
+                <FloatingLabelInput
+                  label={selectedIcon == "user" ? "Username" : "Business name"}
+                  containerStyles={{ borderColor: "black", borderBottomWidth: 1, backgroundColor: "white", height: height / 12 }}
+                  customLabelStyles={{ fontSizeFocused: 20, fontSizeBlurred: 20, colorFocused: "black", colorBlurred: "black" }}
+                  labelStyles={{ color: "black", marginHorizontal: 0 }}
+                  inputStyles={{ marginBottom: "-15%" }}
+                  value={username}
+                  onChangeText={(value) => setUser(value)}
                 />
-                <Text style={styles.emailTxt}>Email</Text>
-                <TextInput
-                  ref={emailRef}
-                  keyboardType="email-address"
-                  placeholder="Enter your email"
-                  style={styles.input}
-                  onChangeText={(email) => setEmail(email)}
+                <FloatingLabelInput
+                  label={"Email"}
+                  keyboardType={"email-address"}
+                  containerStyles={{ borderColor: "black", borderBottomWidth: 1, backgroundColor: "white", height: height / 12 }}
+                  customLabelStyles={{ fontSizeFocused: 20, fontSizeBlurred: 20, colorFocused: "black", colorBlurred: "black" }}
+                  labelStyles={{ color: "black", marginHorizontal: 0 }}
+                  inputStyles={{ marginBottom: "-15%" }}
+                  value={email}
+                  onChangeText={(value) => setEmail(value)}
                 />
-                <Text style={styles.passTxt}>Password</Text>
-                <TextInput
-                  ref={passRef}
-                  placeholder="Enter your password"
-                  style={styles.input}
-                  onChangeText={(password) => setPassword(password)}
-                  secureTextEntry
+                <FloatingLabelInput
+                  label={"Password"}
+                  isPassword={true}
+                  containerStyles={{ borderColor: "black", borderBottomWidth: 1, backgroundColor: "white", height: height / 12 }}
+                  customLabelStyles={{ fontSizeFocused: 20, fontSizeBlurred: 20, colorFocused: "black", colorBlurred: "black" }}
+                  labelStyles={{ color: "black", marginHorizontal: 0 }}
+                  inputStyles={{ marginBottom: "-15%" }}
+                  value={password}
+                  onChangeText={(value) => setPassword(value)}
                 />
               </View>
 
@@ -267,7 +268,7 @@ const styles = StyleSheet.create({
     height: height / 25,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: height / 100,
+    marginTop: height / 25,
     elevation: 3
   },
   input: {
