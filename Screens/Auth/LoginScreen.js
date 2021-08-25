@@ -97,7 +97,7 @@ export default function LoginScreen({ navigation }) {
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then(() => {
-        firebase.auth().onAuthStateChanged((user) => {
+        const sub = firebase.auth().onAuthStateChanged((user) => {
           if (user) {
             setLoading(false);
             navigation.reset({

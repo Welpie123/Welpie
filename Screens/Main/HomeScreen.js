@@ -31,6 +31,8 @@ import logout from "../../assets/logout.png";
 import menu from "../../assets/menu.png";
 import close from "../../assets/close.png";
 import * as key from "../../Firebase";
+import SkeletonContent from "react-native-skeleton-content";
+import ProgressiveImage from "../../Components/ProgressiveImage";
 
 if (!firebase.apps.length) {
   firebase.initializeApp(key);
@@ -73,7 +75,7 @@ export default function App({ navigation }) {
         });
 
         setUsers(users);
-        setLoading(false);
+        setTimeout(() => setLoading(false), 1000);
       });
   };
 
@@ -92,105 +94,149 @@ export default function App({ navigation }) {
         });
 
         setUsers(users);
-        setLoading(false);
+        setTimeout(() => setLoading(false), 1000);
       });
     // Unsubscribe from events when no longer in use
     return () => subscriber();
   }, []);
 
-  function getWidth() {
-    let width = Dimensions.get("window").width;
-    width = width - 60;
-    return width / 5;
-  }
-
   function Item({ items }) {
     const [liked, setLiked] = useState(false);
     return (
       <View style={styles.article}>
-        <View style={styles.header}>
-          {items.profile == "" ? (
-            <View
-              style={{
-                backgroundColor: "#cccccc",
-                width: 40,
-                height: 40,
-                borderRadius: 20,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Icon name="user" size={20} />
-            </View>
-          ) : (
-            <Image
-              source={{ uri: items.profile }}
-              style={styles.profilePhoto}
-            />
-          )}
-
-          <View style={{ paddingLeft: 5 }}>
-            <Text style={{ fontWeight: "bold" }}>{items.Name}</Text>
-            <Text style={{ fontSize: 12 }}>
-              {moment(items.timestamp).fromNow()}
-            </Text>
-          </View>
-        </View>
-        <View style={{ padding: 10 }}>
-          <Text style={{ fontSize: 12 }}>{items.text}</Text>
-          <Image
-            source={{ uri: items.Image }}
-            style={{
-              width: width / 1.3,
-              height: 150,
+        <SkeletonContent
+          containerStyle={{ flex: 1 }}
+          isLoading={loading}
+          animationType="shiver"
+          highlightColor="aliceblue"
+          layout={[
+            { width: 40, height: 40, borderRadius: 20 },
+            {
+              width: 180,
+              height: 20,
+              marginTop: -40,
+              marginBottom: 20,
+              marginLeft: 50,
+            },
+            {
+              width: 100,
+              height: 20,
+              marginTop: -10,
+              marginBottom: 20,
+              marginLeft: 50,
+            },
+            {
+              width: 300,
+              height: 20,
+              marginTop: -10,
+              marginBottom: 20,
+              marginLeft: 20,
+            },
+            {
+              width: "90%",
+              height: 200,
               borderRadius: 10,
-              marginTop: 10,
-            }}
-          />
-        </View>
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <View style={{ flexDirection: "row" }}>
-            <Text style={{ fontSize: 10, marginRight: 5, marginTop: 1 }}>
-              {items.likes}
-            </Text>
-            <TouchableOpacity
-              onPress={() => {
-                if (!liked) {
-                  var like = parseInt(items.likes) + 1;
-                  setLiked(true);
-                } else {
-                  var like = parseInt(items.likes) - 1;
-                  setLiked(false);
-                }
-
-                db.collection("Articles")
-                  .doc(items.key)
-                  .update({ likes: String(like) });
-              }}
-            >
+              marginLeft: 20,
+              marginBottom: 10,
+            },
+          ]}
+        >
+          <View style={styles.header}>
+            {items.profile == "" ? (
+              <View
+                style={{
+                  backgroundColor: "#cccccc",
+                  width: 40,
+                  height: 40,
+                  borderRadius: 20,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Icon name="user" size={20} />
+              </View>
+            ) : (
               <Image
-                source={require("../../assets/heart.png")}
-                style={{ width: 15, height: 15 }}
+                source={{ uri: items.profile }}
+                style={styles.profilePhoto}
               />
-            </TouchableOpacity>
-          </View>
+            )}
 
-          <View style={{ flexDirection: "row" }}>
-            <Text style={{ fontSize: 10, marginRight: 5, marginTop: 1 }}>
-              {items.commentsNum}
-            </Text>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate("Comments", { key: items.key });
-              }}
-            >
-              <Image
-                source={require("../../assets/comment.png")}
-                style={{ width: 15, height: 15 }}
-              />
-            </TouchableOpacity>
+            <View style={{ paddingLeft: 5 }}>
+              <Text style={{ fontWeight: "bold" }}>{items.Name}</Text>
+              <Text style={{ fontSize: 12 }}>
+                {moment(items.timestamp).fromNow()}
+              </Text>
+            </View>
           </View>
-        </View>
+          <View style={{ padding: 10 }}>
+            <Text style={{ fontSize: 12 }}>{items.text}</Text>
+            {/* <ProgressiveImage
+              defaultImageSource={require("../../assets/default-img.jpg")}
+              source={{ uri: items.Image }}
+              style={{
+                width: "100%",
+                height: 200,
+                borderRadius: 10,
+              }}
+              resizeMode="cover"
+            /> */}
+            <Image
+              source={{ uri: items.Image }}
+              style={{
+                width: width / 1.3,
+                height: 150,
+                borderRadius: 10,
+                marginTop: 10,
+              }}
+            />
+          </View>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <View style={{ flexDirection: "row" }}>
+              <Text style={{ fontSize: 10, marginRight: 5, marginTop: 1 }}>
+                {items.likes}
+              </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  if (!liked) {
+                    var like = parseInt(items.likes) + 1;
+                    setLiked(true);
+                  } else {
+                    var like = parseInt(items.likes) - 1;
+                    setLiked(false);
+                  }
+
+                  db.collection("Articles")
+                    .doc(items.key)
+                    .update({ likes: String(like) });
+                }}
+              >
+                <Image
+                  source={require("../../assets/heart.png")}
+                  style={{ width: 15, height: 15 }}
+                />
+              </TouchableOpacity>
+            </View>
+
+            <View style={{ flexDirection: "row" }}>
+              <Text style={{ fontSize: 10, marginRight: 5, marginTop: 1 }}>
+                {items.commentsNum}
+              </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("Comments", { key: items.key });
+                }}
+              >
+                <Image
+                  source={require("../../assets/comment.png")}
+                  style={{ width: 15, height: 15 }}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </SkeletonContent>
       </View>
     );
   }
@@ -492,26 +538,18 @@ export default function App({ navigation }) {
                 paddingBottom: 60,
               }}
             >
-              {loading ? (
-                <ActivityIndicator
-                  size={25}
-                  color="black"
-                  style={{ justifyContent: "center", alignItems: "center" }}
-                />
-              ) : (
-                <FlatList
-                  data={users}
-                  renderItem={({ item }) => <Item items={item} />}
-                  style={{
-                    height: "100%",
-                    flexGrow: 0,
-                    marginTop: 5,
-                    paddingBottom: showMenu ? "0%" : "42%",
-                  }}
-                  showsVerticalScrollIndicator={false}
-                  verticalScrollIndicator={false}
-                />
-              )}
+              <FlatList
+                data={users}
+                renderItem={({ item }) => <Item items={item} />}
+                style={{
+                  height: "100%",
+                  flexGrow: 0,
+                  marginTop: 5,
+                  paddingBottom: showMenu ? "0%" : "42%",
+                }}
+                showsVerticalScrollIndicator={false}
+                verticalScrollIndicator={false}
+              />
             </View>
           </ScrollView>
         </Animated.View>
