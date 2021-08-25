@@ -43,12 +43,11 @@ LogBox.ignoreLogs([`VirtualizedLists`]);
 const db = firebase.firestore();
 const { height, width } = Dimensions.get("screen");
 
-export default function App({ navigation }) {
+export default function App({ route, navigation }) {
   const textInput = useRef();
   const [currentTab, setCurrentTab] = useState("Home");
   // To get the curretn Status of menu ...
   const [showMenu, setShowMenu] = useState(false);
-
   // Animated Properties...
 
   const offsetValue = useRef(new Animated.Value(0)).current;
@@ -62,6 +61,7 @@ export default function App({ navigation }) {
   const [selected, setSelected] = useState("cars");
 
   const change = (t) => {
+    setLoading(true);
     db.collection("Articles")
       .where("tag", "==", t)
       .onSnapshot((querySnapshot) => {

@@ -111,7 +111,10 @@ export default function LoginScreen({ navigation }) {
           }}
         />
       ) : (
-        <ScrollView style={styles.container}>
+        <ScrollView
+          style={styles.container}
+          keyboardShouldPersistTaps="handled"
+        >
           <View style={styles.containerTopBox}>
             <Text style={styles.title}>Welpie</Text>
             <Image
@@ -179,6 +182,7 @@ export default function LoginScreen({ navigation }) {
                 }}
               >
                 <FloatingLabelInput
+                  animationDuration={200}
                   label={selectedIcon == "user" ? "Username" : "Business name"}
                   containerStyles={{
                     borderColor: "black",
@@ -198,6 +202,7 @@ export default function LoginScreen({ navigation }) {
                   onChangeText={(value) => setUser(value)}
                 />
                 <FloatingLabelInput
+                  animationDuration={200}
                   label={"Email"}
                   keyboardType={"email-address"}
                   containerStyles={{
@@ -218,7 +223,18 @@ export default function LoginScreen({ navigation }) {
                   onChangeText={(value) => setEmail(value)}
                 />
                 <FloatingLabelInput
+                  animationDuration={200}
                   label={"Password"}
+                  customShowPasswordComponent={
+                    <Text style={{ marginTop: "100%" }}>
+                      {password == "" ? "" : "Show"}
+                    </Text>
+                  }
+                  customHidePasswordComponent={
+                    <Text style={{ marginTop: "100%" }}>
+                      {password == "" ? "" : "Hide"}
+                    </Text>
+                  }
                   isPassword={true}
                   containerStyles={{
                     borderColor: "black",

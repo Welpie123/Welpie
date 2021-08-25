@@ -2,7 +2,10 @@ import * as React from "react";
 import Icon from "react-native-vector-icons/Ionicons";
 import firebase from "firebase/app";
 import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator, CardStyleInterpolators } from "@react-navigation/stack";
+import {
+  createStackNavigator,
+  CardStyleInterpolators,
+} from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import LoginScreen from "./Screens/Auth/LoginScreen";
@@ -33,8 +36,8 @@ function AuthStack() {
 
   function getWidth() {
     let width = Dimensions.get("window").width;
-    width = width - 60;
-    return width / 5;
+    width = width;
+    return width;
   }
 
   return (
@@ -56,6 +59,7 @@ function AuthStack() {
           height: "8%",
         },
         showLabel: false,
+        keyboardHidesTabBar: true,
       }}
     >
       <Tab.Screen
@@ -80,7 +84,7 @@ function AuthStack() {
                 style={{
                   backgroundColor: "#7653D9",
                   height: 1,
-                  width: getWidth() - 20,
+                  width: "50%",
                   position: "absolute",
                   bottom: 0,
                   left: -2,
@@ -124,7 +128,7 @@ function AuthStack() {
         listeners={({ NavigationContainer, route }) => ({
           tabPress: (e) => {
             Animated.spring(tabOffsetValue, {
-              toValue: getWidth() * 1,
+              toValue: getWidth() / 5.8,
               useNativeDriver: true,
             }).start();
           },
@@ -144,7 +148,7 @@ function AuthStack() {
             >
               <Icon
                 name="add-circle"
-                size={Platform.OS == "ios" ? 60 : 50}
+                size={50}
                 color="#7653D9"
                 style={{ height: 60 }}
               />
@@ -156,7 +160,7 @@ function AuthStack() {
         listeners={({ NavigationContainer, route }) => ({
           tabPress: (e) => {
             Animated.spring(tabOffsetValue, {
-              toValue: getWidth() * 2,
+              toValue: getWidth() / 2.95,
               useNativeDriver: true,
             }).start();
           },
@@ -186,7 +190,7 @@ function AuthStack() {
         listeners={({ NavigationContainer, route }) => ({
           tabPress: (e) => {
             Animated.spring(tabOffsetValue, {
-              toValue: getWidth() * 3,
+              toValue: getWidth() / 1.9,
               useNativeDriver: true,
             }).start();
           },
@@ -216,7 +220,7 @@ function AuthStack() {
         listeners={({ NavigationContainer, route }) => ({
           tabPress: (e) => {
             Animated.spring(tabOffsetValue, {
-              toValue: getWidth() * 4,
+              toValue: getWidth() / 1.43,
               useNativeDriver: true,
             }).start();
           },
@@ -239,13 +243,17 @@ export default function App() {
           component={LoginScreen}
           options={{
             animationEnabled: true,
-            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
           }}
         />
-        <Stack.Screen name="Home" component={AuthStack} options={{
-          animationEnabled: true,
-          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
-        }} />
+        <Stack.Screen
+          name="Home"
+          component={AuthStack}
+          options={{
+            animationEnabled: true,
+            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+          }}
+        />
         <Stack.Screen
           name="Signup"
           component={SignupScreen}
@@ -255,8 +263,9 @@ export default function App() {
           name="Verify"
           component={VerifyScreen}
           options={{
-            cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS
-          }} />
+            cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

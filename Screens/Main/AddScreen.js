@@ -18,6 +18,7 @@ import firebase from "firebase/app";
 import "firebase/storage";
 import "firebase/firestore";
 import * as key from "../../Firebase";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
 if (!firebase.apps.length) {
   firebase.initializeApp(key.firebaseConfig);
@@ -27,7 +28,7 @@ const { height, width } = Dimensions.get("screen");
 const db = firebase.firestore();
 const store = firebase.storage();
 
-export default function AddScreen({ navigation }) {
+export default function AddScreen({ navigation, route }) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
   const [items, setItems] = useState([
@@ -37,8 +38,15 @@ export default function AddScreen({ navigation }) {
     { label: "Fashion", value: "fashion" },
     { label: "Perfume", value: "perfume" },
   ]);
+  const [secondItems, setSecondItems] = useState([
+    { label: "Cars", value: "cars" },
+    { label: "Animals", value: "animals" },
+  ]);
   const [image, setImage] = useState(null);
   const [text, setText] = useState("");
+  const tabBarHeight = useBottomTabBarHeight();
+  const { itemId } = route.params;
+  console.log(itemId);
 
   useEffect(() => {
     (async () => {
@@ -113,7 +121,7 @@ export default function AddScreen({ navigation }) {
   }
 
   return (
-    <ScrollView>
+    <ScrollView style={{ marginBottom: tabBarHeight }}>
       <View style={styles.container}>
         {image == null ? (
           <View
@@ -155,10 +163,10 @@ export default function AddScreen({ navigation }) {
         <DropDownPicker
           open={open}
           value={value}
-          items={items}
+          items={itemId == "user" ? secondItems : items}
           setOpen={setOpen}
           setValue={setValue}
-          setItems={setItems}
+          setItems={itemId == "user" ? setSecondItems : setItems}
           style={{
             width: width / 2,
             alignSelf: "center",
@@ -170,7 +178,11 @@ export default function AddScreen({ navigation }) {
             shadowOpacity: 0.2,
             shadowRadius: 3,
           }}
-          dropDownContainerStyle={{ elevation: 5, width: width / 2, alignSelf: "center", }}
+          dropDownContainerStyle={{
+            elevation: 5,
+            width: width / 2,
+            alignSelf: "center",
+          }}
         />
         <View
           style={{

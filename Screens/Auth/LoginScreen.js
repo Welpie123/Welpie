@@ -102,10 +102,22 @@ export default function LoginScreen({ navigation }) {
             setLoading(false);
             navigation.reset({
               index: 0,
-              routes: [{ name: "Home" }],
+              routes: [
+                {
+                  name: "Home",
+                  state: {
+                    routes: [
+                      { name: "Add", params: { itemId: selectedIcon } },
+                      { name: "Home" },
+                    ],
+                    index: 1,
+                  },
+                },
+              ],
             });
           }
         });
+        sub();
       })
       .catch((error) => {
         setError(error.message);
@@ -114,7 +126,7 @@ export default function LoginScreen({ navigation }) {
   }
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
       <View style={styles.containerTopBox}>
         <Text style={styles.title}>Welpie</Text>
         <Image source={require("../../assets/logo.png")} style={styles.logo} />
@@ -187,19 +199,8 @@ export default function LoginScreen({ navigation }) {
               paddingHorizontal: "15%",
             }}
           >
-            {/* { {selectedIcon == "user" ? (
-              <Text style={styles.emailTxt}>Personal email</Text>
-            ) : (
-              <Text style={styles.emailTxt}>Business email</Text>
-            )}
-            <TextInput
-              ref={emailRef}
-              placeholder="Enter your email"
-              style={styles.input}
-              keyboardType="email-address"
-              onChangeText={(email) => setEmail(email)}
-            />} */}
             <FloatingLabelInput
+              animationDuration={200}
               label={
                 selectedIcon == "user" ? "Personal email" : "Business email"
               }
@@ -222,6 +223,17 @@ export default function LoginScreen({ navigation }) {
               onChangeText={(value) => setEmail(value)}
             />
             <FloatingLabelInput
+              animationDuration={200}
+              customShowPasswordComponent={
+                <Text style={{ marginTop: "100%" }}>
+                  {password == "" ? "" : "Show"}
+                </Text>
+              }
+              customHidePasswordComponent={
+                <Text style={{ marginTop: "100%" }}>
+                  {password == "" ? "" : "Hide"}
+                </Text>
+              }
               label={"Password"}
               isPassword={true}
               containerStyles={{
@@ -241,14 +253,6 @@ export default function LoginScreen({ navigation }) {
               value={password}
               onChangeText={(value) => setPassword(value)}
             />
-            {/* {<Text style={styles.passTxt}>Password</Text>
-            <TextInput
-              ref={passRef}
-              placeholder="Enter your password"
-              style={styles.input}
-              onChangeText={(password) => setPassword(password)}
-              secureTextEntry
-            />} */}
           </View>
 
           <TouchableOpacity
@@ -256,7 +260,6 @@ export default function LoginScreen({ navigation }) {
               Platform.OS === "ios" ? styles.buttonIOS : styles.buttonAndroid
             }
             onPress={() => {
-              //login(email, password);
               checkAccess();
             }}
           >
