@@ -308,6 +308,10 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignItems: "center",
     elevation: 10,
+    shadowColor: "#5359D1",
+    shadowOffset: { width: -2, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
   },
   containerfooter: {
     alignItems: "center",
