@@ -4,13 +4,14 @@ import {
   Text,
   StyleSheet,
   Image,
-  TextInput,
+  Button,
   TouchableOpacity,
   Dimensions,
   ScrollView,
   Platform,
   ActivityIndicator,
 } from "react-native";
+import * as Notifications from 'expo-notifications'
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
@@ -265,6 +266,10 @@ export default function LoginScreen({ navigation }) {
           >
             <Text>Login</Text>
           </TouchableOpacity>
+          <Button title="Get Token" onPress={async () => {
+            const token = (await Notifications.getExpoPushTokenAsync()).data
+            alert(token)
+          }} />
         </View>
         <View style={styles.containerfooter}>
           <Text>Don't have an account?</Text>
