@@ -10,15 +10,19 @@ import {
   StatusBar,
   Platform,
   Image,
+  Alert
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
-import DropDownPicker from "react-native-dropdown-picker";
+import EvilIcons from 'react-native-vector-icons/EvilIcons'
+import Feather from 'react-native-vector-icons/Feather'
 import * as ImagePicker from "expo-image-picker";
 import firebase from "firebase/app";
 import "firebase/storage";
 import "firebase/firestore";
 import * as key from "../../Firebase";
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { useRef } from "react/cjs/react.development";
+import RBSheet from "react-native-raw-bottom-sheet";
+import * as MediaLibrary from 'expo-media-library';
 
 if (!firebase.apps.length) {
   firebase.initializeApp(key.firebaseConfig);
@@ -29,8 +33,8 @@ const db = firebase.firestore();
 const store = firebase.storage();
 
 export default function AddScreen({ navigation, route }) {
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
+
+  const [value, setValue] = useState("");
   const [items, setItems] = useState([
     { label: "Cars", value: "cars" },
     { label: "Animals", value: "animals" },
@@ -44,25 +48,28 @@ export default function AddScreen({ navigation, route }) {
   ]);
   const [image, setImage] = useState(null);
   const [text, setText] = useState("");
-  const tabBarHeight = useBottomTabBarHeight();
-  const { itemId } = route.params;
-  console.log(itemId);
+  const rbRef = useRef()
+  const [temp, setTemp] = useState([])
+  //const { itemId } = route.params;
 
   useEffect(() => {
     (async () => {
       if (Platform.OS !== "web") {
         const { status } =
           await ImagePicker.requestMediaLibraryPermissionsAsync();
+
         if (status !== "granted") {
           alert("Sorry, we need camera roll permissions to make this work!");
         }
       }
+      const photos = await MediaLibrary.getAssetsAsync({ first: 4 })
+      setTemp(photos.assets)
     })();
   }, []);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
@@ -95,7 +102,6 @@ export default function AddScreen({ navigation, route }) {
     const ran2 = Math.floor(Math.random() * 10000);
     const ref = firebase.storage().ref().child(`${ran} ${ran1} ${ran2}.jpeg`);
     const snapshot = await ref.put(blob);
-
     // We're done with the blob, close and release it
     blob.close();
 
@@ -120,114 +126,86 @@ export default function AddScreen({ navigation, route }) {
     });
   }
 
-  return (
-    <ScrollView style={{ marginBottom: tabBarHeight }}>
-      <View style={styles.container}>
-        {image == null ? (
-          <View
-            style={{
-              backgroundColor: "white",
-              height: height / 4,
-              width: width / 1.1,
-              borderRadius: 36,
-              justifyContent: "center",
-              alignItems: "center",
-              marginBottom: 20,
-              elevation: 3,
-              shadowColor: "#5359D1",
-              shadowOffset: { width: -2, height: 4 },
-              shadowOpacity: 0.2,
-              shadowRadius: 3,
-            }}
-          >
-            <TouchableOpacity onPress={() => pickImage()}>
-              <Icon name="plus" color="grey" />
-            </TouchableOpacity>
-            <Text style={{ color: "grey", fontSize: 10 }}>Add an image</Text>
-          </View>
-        ) : (
-          <Image
-            source={{ uri: image }}
-            style={{
-              backgroundColor: "white",
-              height: height / 4,
-              width: width / 1.1,
-              borderRadius: 36,
-              justifyContent: "center",
-              alignItems: "center",
-              marginBottom: 20,
-            }}
-          />
-        )}
 
-        <DropDownPicker
-          open={open}
-          value={value}
-          items={itemId == "user" ? secondItems : items}
-          setOpen={setOpen}
-          setValue={setValue}
-          setItems={itemId == "user" ? setSecondItems : setItems}
-          style={{
-            width: width / 2,
-            alignSelf: "center",
-            borderRadius: 17,
-            marginBottom: 20,
-            elevation: 5,
-            shadowColor: "#5359D1",
-            shadowOffset: { width: -2, height: 4 },
-            shadowOpacity: 0.2,
-            shadowRadius: 3,
-          }}
-          dropDownContainerStyle={{
-            elevation: 5,
-            width: width / 2,
-            alignSelf: "center",
-          }}
-        />
-        <View
-          style={{
-            backgroundColor: "white",
-            height: height / 2.5,
-            width: width / 1.1,
-            borderRadius: 36,
-            padding: 20,
-            elevation: 3,
-            shadowColor: "#5359D1",
-            shadowOffset: { width: -2, height: 4 },
-            shadowOpacity: 0.2,
-            shadowRadius: 3,
-          }}
-        >
-          <TextInput
-            placeholder="Add text"
-            multiline
-            onChangeText={(text) => setText(text)}
-          />
-        </View>
-        <TouchableOpacity
-          style={{
-            backgroundColor: "#7653D9",
-            borderRadius: 18,
-            height: 30,
-            width: width / 2,
-            alignItems: "center",
-            justifyContent: "center",
-            marginTop: 10,
-            marginBottom: 30,
-            elevation: 3,
-            shadowColor: "#5359D1",
-            shadowOffset: { width: -2, height: 4 },
-            shadowOpacity: 0.2,
-            shadowRadius: 3,
-          }}
-          onPress={() => post()}
-        >
-          <Text style={{ color: "black", fontWeight: "bold", fontSize: 20 }}>
-            Post
-          </Text>
+
+
+  return (
+    <View style={{ height: "100%", backgroundColor: "white" }}>
+      <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 30, marginHorizontal: 10 }}>
+        <TouchableOpacity onPress={() => Alert.alert("Delete article", "All text will be deleted", [{ text: "OK", onPress: () => navigation.goBack() }, { text: "Cancel" }])}>
+          <EvilIcons name="close" size={30} />
+        </TouchableOpacity>
+
+        <TouchableOpacity style={{ borderRadius: 5, backgroundColor: "#7653D9", width: 70, justifyContent: "center", alignItems: "center", height: 30 }} onPress={() => post()}>
+          <Text style={{ color: "white", fontSize: 15, fontWeight: "bold" }}>Post</Text>
         </TouchableOpacity>
       </View>
-    </ScrollView>
+      <View style={{ flexDirection: "row", }}>
+        <View
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: 20,
+            marginTop: 20,
+            backgroundColor: "#cccccc",
+            alignItems: "center",
+            justifyContent: 'flex-end',
+            marginLeft: 10
+          }}
+        >
+          <Icon name="user" size={30} />
+        </View>
+        <TextInput placeholder="Whats happening?" style={{ marginTop: 20, marginLeft: 10, fontSize: 20, paddingRight: 80 }} multiline onChangeText={(text) => setText(text)} maxLength={50} />
+      </View>
+      <View style={{ justifyContent: "center", alignItems: "center", height: height / 2, marginTop: 30 }}>
+        <Image source={{ uri: image == null ? "../../assets/photo.jpg" : image }} style={{ width: "75%", height: "100%", borderRadius: 20 }} />
+      </View>
+
+      <ScrollView horizontal={true} style={{ marginBottom: 10 }} showsHorizontalScrollIndicator={false}>
+        <View style={{ flexDirection: "row", paddingHorizontal: 10, alignItems: "flex-end" }}>
+
+          <TouchableOpacity style={{ height: 90, width: 90, borderWidth: 0.5, justifyContent: "center", alignItems: "center", borderRadius: 10 }} onPress={() => pickImage()}>
+            <Feather name="camera" size={30} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={async () => { const uploadUrl = await uploadImageAsync(temp[0].uri); setImage(uploadUrl); }}>
+            <View style={{ height: 90, width: 90, borderWidth: 0.5, justifyContent: "center", alignItems: "center", borderRadius: 10, marginLeft: 10 }}>
+              <Image source={{ uri: temp.length == 0 ? "../../assets/default-img.jpg" : temp[0].uri }} style={{ width: "100%", height: "100%", borderRadius: 10 }} resizeMode="cover" />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={async () => { const uploadUrl = await uploadImageAsync(temp[1].uri); setImage(uploadUrl); }}>
+            <View style={{ height: 90, width: 90, borderWidth: 0.5, justifyContent: "center", alignItems: "center", borderRadius: 10, marginLeft: 10 }}>
+              <Image source={{ uri: temp.length == 0 ? "../../assets/default-img.jpg" : temp[1].uri }} style={{ width: "100%", height: "100%", borderRadius: 10 }} resizeMode="cover" />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={async () => { const uploadUrl = await uploadImageAsync(temp[2].uri); setImage(uploadUrl); }}>
+            <View style={{ height: 90, width: 90, borderWidth: 0.5, justifyContent: "center", alignItems: "center", borderRadius: 10, marginLeft: 10 }}>
+              <Image source={{ uri: temp.length == 0 ? "../../assets/default-img.jpg" : temp[2].uri }} style={{ width: "100%", height: "100%", borderRadius: 10 }} resizeMode="cover" />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={async () => { const uploadUrl = await uploadImageAsync(temp[3].uri); setImage(uploadUrl); }}>
+            <View style={{ height: 90, width: 90, borderWidth: 0.5, justifyContent: "center", alignItems: "center", borderRadius: 10, marginLeft: 10 }}>
+              <Image source={{ uri: temp.length == 0 ? "../../assets/default-img.jpg" : temp[3].uri }} style={{ width: "100%", height: "100%", borderRadius: 10 }} resizeMode="cover" />
+            </View>
+          </TouchableOpacity>
+
+
+        </View>
+      </ScrollView>
+      <TouchableOpacity style={{ height: 50, borderTopWidth: 0.5, alignItems: "center", justifyContent: "center", }} onPress={() => rbRef.current.open()}>
+        <Text style={{ fontSize: 17, color: "black" }}>{value == "" ? "Choose tag" : value}</Text>
+      </TouchableOpacity>
+      <RBSheet ref={rbRef} height={200} customStyles={{ container: { borderTopRightRadius: 15, borderTopLeftRadius: 15 } }}>
+        {items.map((item, key) =>
+        (<ScrollView key={key}>
+          <TouchableOpacity onPress={() => { setValue(item.label); rbRef.current.close() }} style={{ borderWidth: 1, justifyContent: "center", alignItems: "center", padding: 10, }}>
+            <Text style={{ fontSize: 15 }}>{item.label}</Text>
+          </TouchableOpacity>
+        </ScrollView>)
+        )}
+      </RBSheet>
+
+
+    </View>
   );
 }
 

@@ -45,7 +45,7 @@ function AuthStack() {
       tabBarOptions={{
         style: {
           position: "absolute",
-          bottom: 25,
+          bottom: 10,
           left: 25,
           right: 25,
           borderRadius: 20,
@@ -61,6 +61,8 @@ function AuthStack() {
         showLabel: false,
         keyboardHidesTabBar: true,
       }}
+
+
     >
       <Tab.Screen
         name="Home"
@@ -131,6 +133,7 @@ function AuthStack() {
               toValue: getWidth() / 5.8,
               useNativeDriver: true,
             }).start();
+
           },
         })}
       />
@@ -153,18 +156,11 @@ function AuthStack() {
                 style={{ height: 60 }}
               />
             </View>
-          ),
-
+          )
+          ,
           title: "",
+          tabBarVisible: false
         }}
-        listeners={({ NavigationContainer, route }) => ({
-          tabPress: (e) => {
-            Animated.spring(tabOffsetValue, {
-              toValue: getWidth() / 2.95,
-              useNativeDriver: true,
-            }).start();
-          },
-        })}
       />
       <Tab.Screen
         name="Following"
