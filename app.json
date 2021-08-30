@@ -24,7 +24,13 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#7653D9"
       },
-      "package": "com.welpie.welpie"
+      "package": "com.welpie.welpie",
+      "googleServicesFile": "./google-services.json",
+      "config": {
+        "googleSignIn": {
+          "apiKey": "AIzaSyAY8XSS7ZyoJ-yYUQL8DVRGZ-Vb-Y7S-3E"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"

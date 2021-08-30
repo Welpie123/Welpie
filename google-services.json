@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "110019844651",
+    "project_id": "welpie",
+    "storage_bucket": "welpie.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:110019844651:android:b2f9004b3e502a9ae4a86e",
+        "android_client_info": {
+          "package_name": "com.welpie.welpie"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "110019844651-d102tgubiic23qfejtia5pk2t4kvj0ph.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAY8XSS7ZyoJ-yYUQL8DVRGZ-Vb-Y7S-3E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "110019844651-d102tgubiic23qfejtia5pk2t4kvj0ph.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
   ScrollView,
 } from "react-native";
+import * as Notifications from 'expo-notifications'
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
@@ -51,6 +52,7 @@ export default function LoginScreen({ navigation }) {
   }
 
   async function addAdminToDb() {
+    const token = (await Notifications.getExpoPushTokenAsync()).data
     await db
       .collection("test_users")
       .doc(firebase.auth().currentUser.uid)
@@ -60,6 +62,7 @@ export default function LoginScreen({ navigation }) {
         access: "admin",
         verified: false,
         uid: String(firebase.auth().currentUser.uid),
+        token: token
       })
       .then(() => {
         console.log(`${username} added as admin`);
