@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -20,7 +20,6 @@ import firebase from "firebase/app";
 import "firebase/storage";
 import "firebase/firestore";
 import * as key from "../../Firebase";
-import { useRef } from "react/cjs/react.development";
 import RBSheet from "react-native-raw-bottom-sheet";
 import * as MediaLibrary from 'expo-media-library';
 
@@ -108,8 +107,8 @@ export default function AddScreen({ navigation, route }) {
     return await snapshot.ref.getDownloadURL();
   }
 
-  function post() {
-    db.collection("Articles").add({
+  async function post() {
+    await db.collection("Articles").add({
       Image: image,
       Name: firebase.auth().currentUser.displayName,
       comments: firebase.firestore.FieldValue.arrayUnion(),
@@ -130,13 +129,13 @@ export default function AddScreen({ navigation, route }) {
 
 
   return (
-    <View style={{ height: "100%", backgroundColor: "white" }}>
+    <View style={styles.container}>
       <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 30, marginHorizontal: 10 }}>
         <TouchableOpacity onPress={() => Alert.alert("Delete article", "All text will be deleted", [{ text: "OK", onPress: () => navigation.goBack() }, { text: "Cancel" }])}>
           <EvilIcons name="close" size={30} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={{ borderRadius: 5, backgroundColor: "#7653D9", width: 70, justifyContent: "center", alignItems: "center", height: 30 }} onPress={() => post()}>
+        <TouchableOpacity style={{ borderRadius: 5, backgroundColor: "#7653D9", width: 70, justifyContent: "center", alignItems: "center", height: 30 }} onPress={async () => await post()}>
           <Text style={{ color: "white", fontSize: 15, fontWeight: "bold" }}>Post</Text>
         </TouchableOpacity>
       </View>
@@ -211,9 +210,7 @@ export default function AddScreen({ navigation, route }) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    height: "100%",
     backgroundColor: "#F1F1F1",
     marginTop: Platform.OS == "ios" ? 45 : StatusBar.currentHeight + 10,
   },
