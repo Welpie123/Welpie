@@ -45,7 +45,7 @@ function AuthStack() {
       tabBarOptions={{
         style: {
           position: "absolute",
-          bottom: 10,
+          bottom: 5,
           left: 25,
           right: 25,
           borderRadius: 20,
