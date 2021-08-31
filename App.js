@@ -62,7 +62,6 @@ function AuthStack() {
         keyboardHidesTabBar: true,
       }}
 
-
     >
       <Tab.Screen
         name="Home"

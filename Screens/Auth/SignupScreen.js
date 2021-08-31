@@ -34,13 +34,17 @@ export default function LoginScreen({ navigation }) {
   const nameRef = useRef();
   const db = firebase.firestore();
 
-  function addUserToDb() {
+  async function addUserToDb() {
+    const token = (await Notifications.getExpoPushTokenAsync()).data
     db.collection("test_users")
       .doc(firebase.auth().currentUser.uid)
       .set({
         name: username,
         email: email,
         access: "user",
+        uid: String(firebase.auth().currentUser.uid),
+        following: [],
+        token: token,
       })
       .then(console.log(`${username} added as user`));
     setLoading(false);
@@ -62,7 +66,8 @@ export default function LoginScreen({ navigation }) {
         access: "admin",
         verified: false,
         uid: String(firebase.auth().currentUser.uid),
-        token: token
+        token: token,
+        following: []
       })
       .then(() => {
         console.log(`${username} added as admin`);
