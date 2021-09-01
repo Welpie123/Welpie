@@ -54,6 +54,7 @@ export default function AddScreen({ navigation, route }) {
   const [temp, setTemp] = useState([]);
   const [progress, setProgress] = useState(0.0);
   const [result, setResult] = useState("");
+  const inputRef = useRef();
   //const { itemId } = route.params;
 
   useEffect(() => {
@@ -164,7 +165,14 @@ export default function AddScreen({ navigation, route }) {
             <TouchableOpacity
               onPress={() =>
                 Alert.alert("Delete article", "All text will be deleted", [
-                  { text: "OK", onPress: () => navigation.goBack() },
+                  {
+                    text: "OK",
+                    onPress: () => {
+                      navigation.goBack(),
+                        setResult(""),
+                        inputRef.current.clear();
+                    },
+                  },
                   { text: "Cancel" },
                 ])
               }
@@ -235,6 +243,7 @@ export default function AddScreen({ navigation, route }) {
           </View>
           <View>
             <TextInput
+              ref={inputRef}
               placeholder="What's on your mind?"
               style={{
                 fontSize: 20,
