@@ -1,5 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, StatusBar, Platform, FlatList, Dimensions, Image, TouchableOpacity, ScrollView, RefreshControl } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  StatusBar,
+  Platform,
+  FlatList,
+  Dimensions,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  RefreshControl,
+} from "react-native";
 import SkeletonContent from "react-native-skeleton-content";
 import firebase from "firebase/app";
 import "firebase/storage";
@@ -10,52 +22,49 @@ import Icon from "react-native-vector-icons/FontAwesome";
 const db = firebase.firestore();
 const { height, width } = Dimensions.get("screen");
 const wait = (timeout) => {
-  return new Promise(resolve => setTimeout(resolve, timeout));
-}
+  return new Promise((resolve) => setTimeout(resolve, timeout));
+};
 
 export default function FollowingScreen({ navigation }) {
   const [loading, setLoading] = useState(true); // Set loading to true on component mount
   const [users, setUsers] = useState({});
-  const [followers, setFollowers] = useState([])
-
-
+  const [followers, setFollowers] = useState([]);
 
   useEffect(() => {
     const subscriber = db
-      .collection('test_users')
+      .collection("test_users")
       .doc(firebase.auth().currentUser.uid)
-      .onSnapshot(documentSnapshot => {
-        console.log('User data: ', documentSnapshot.data().following);
-        subscriber2(documentSnapshot.data().following.length == 0 ? [""] : documentSnapshot.data().following)
-        setLoading(false)
+      .onSnapshot((documentSnapshot) => {
+        console.log("User data: ", documentSnapshot.data().following);
+        subscriber2(
+          documentSnapshot.data().following.length == 0
+            ? [""]
+            : documentSnapshot.data().following
+        );
+        setLoading(false);
       });
 
-    const subscriber2 = (st) => db
-      .collection('Articles')
-      .where("Name", "in", st)
-      .get()
-      .then(querySnapshot => {
-        const users = [];
+    const subscriber2 = (st) =>
+      db
+        .collection("Articles")
+        .where("Name", "in", st)
+        .get()
+        .then((querySnapshot) => {
+          const users = [];
 
-        querySnapshot.forEach((documentSnapshot) => {
-          users.push({
-            ...documentSnapshot.data(),
-            key: documentSnapshot.id,
+          querySnapshot.forEach((documentSnapshot) => {
+            users.push({
+              ...documentSnapshot.data(),
+              key: documentSnapshot.id,
+            });
           });
-        });
 
-        setUsers(users);
-      });
+          setUsers(users);
+        });
 
     // Stop listening for updates when no longer required
     return () => subscriber();
   }, []);
-
-
-
-
-
-
 
   function Item({ items }) {
     const [liked, setLiked] = useState(false);
@@ -201,18 +210,21 @@ export default function FollowingScreen({ navigation }) {
 
   return (
     <View>
-      <View style={{
-        backgroundColor: "#7653D9",
-        borderBottomLeftRadius: 23,
-        borderBottomRightRadius: 23,
-        borderTopLeftRadius: 23,
-        paddingLeft: 25,
-        paddingBottom: 20,
-        paddingTop: Platform.OS == "ios" ? 45 : StatusBar.currentHeight,
-        justifyContent: "center",
-        alignItems: "center"
-      }}>
-        <Text style={{ fontWeight: "bold", color: "white", fontSize: 20 }}>Following</Text>
+      <View
+        style={{
+          backgroundColor: "#7653D9",
+          borderBottomLeftRadius: 23,
+          borderBottomRightRadius: 23,
+          borderTopLeftRadius: 23,
+          paddingBottom: 20,
+          paddingTop: Platform.OS == "ios" ? 45 : StatusBar.currentHeight,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Text style={{ fontWeight: "bold", color: "white", fontSize: 20 }}>
+          Following
+        </Text>
       </View>
       <ScrollView
         showsVerticalScrollIndicator={false}
