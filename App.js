@@ -18,6 +18,7 @@ import ProfileScreen from "./Screens/Main/ProfileScreen";
 import LoadingScreen from "./Screens/Loading/Loading";
 import CommentsScreen from "./Screens/Main/CommentsScreen";
 import VerifyScreen from "./Screens/Loading/VerifyScreen";
+import ChatScreen from "./Screens/Main/ChatScreen";
 import * as key from "./Firebase";
 import { color } from "react-native-reanimated";
 import { View, Text, Animated, Dimensions, Platform } from "react-native";
@@ -61,7 +62,6 @@ function AuthStack() {
         showLabel: false,
         keyboardHidesTabBar: true,
       }}
-
     >
       <Tab.Screen
         name="Home"
@@ -132,7 +132,6 @@ function AuthStack() {
               toValue: getWidth() / 5.8,
               useNativeDriver: true,
             }).start();
-
           },
         })}
       />
@@ -155,10 +154,9 @@ function AuthStack() {
                 style={{ height: 60 }}
               />
             </View>
-          )
-          ,
+          ),
           title: "",
-          tabBarVisible: false
+          tabBarVisible: false,
         }}
       />
       <Tab.Screen
@@ -233,6 +231,7 @@ export default function App() {
       <Stack.Navigator headerMode="none" initialRouteName="Login">
         <Stack.Screen name="Loading" component={LoadingScreen} />
         <Stack.Screen name="Comments" component={CommentsScreen} />
+        <Stack.Screen name="Chat" component={ChatScreen} />
         <Stack.Screen
           name="Login"
           component={LoginScreen}

@@ -411,16 +411,26 @@ export default function App({ route, navigation }) {
                 />
               </TouchableOpacity>
 
-              <Image
-                source={chat}
+              <TouchableOpacity
                 style={{
-                  width: 20,
-                  height: 20,
-                  tintColor: "black",
-                  marginTop: 20,
-                  marginRight: 20,
+                  height: 40,
+                  width: 40,
                 }}
-              />
+                onPress={() => {
+                  navigation.navigate("Chat");
+                }}
+              >
+                <Image
+                  source={chat}
+                  style={{
+                    width: 20,
+                    height: 20,
+                    tintColor: "black",
+                    marginTop: 20,
+                    marginRight: 20,
+                  }}
+                />
+              </TouchableOpacity>
             </View>
 
             <ScrollView
