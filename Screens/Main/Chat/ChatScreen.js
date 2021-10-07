@@ -25,7 +25,7 @@ LogBox.ignoreLogs([`VirtualizedLists`]);
 
 const db = firebase.firestore();
 
-export default function ChatScreen() {
+export default function ChatScreen({ navigation }) {
   const [oldmessages, setOldMessages] = useState({});
   const [messages, setMessages] = useState({});
   const [loading, setLoading] = useState(true);
@@ -63,32 +63,36 @@ export default function ChatScreen() {
 
   function Item({ items }) {
     return (
-      <View>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            paddingLeft: 20,
-            borderBottomWidth: 0.5,
-            paddingVertical: 10,
-          }}
-        >
-          {items.pic == undefined ? (
-            <Icon name="user-circle-o" size={50} />
-          ) : (
-            <Image
-              source={{ uri: items.pic }}
-              style={{ width: 50, height: 50, borderRadius: 25 }}
-            />
-          )}
-          <View style={{ marginLeft: 10 }}>
-            <Text style={{ fontWeight: "bold", fontSize: 17 }}>
-              {items.sender}
-            </Text>
-            <Text>{items.message}</Text>
+      <TouchableOpacity
+        onPress={() => navigation.navigate("ChatPanel", { name: items.sender })}
+      >
+        <View>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              paddingLeft: 20,
+              borderBottomWidth: 0.5,
+              paddingVertical: 10,
+            }}
+          >
+            {items.pic == undefined ? (
+              <Icon name="user-circle-o" size={50} />
+            ) : (
+              <Image
+                source={{ uri: items.pic }}
+                style={{ width: 50, height: 50, borderRadius: 25 }}
+              />
+            )}
+            <View style={{ marginLeft: 10 }}>
+              <Text style={{ fontWeight: "bold", fontSize: 17 }}>
+                {items.sender}
+              </Text>
+              <Text>{items.message}</Text>
+            </View>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   }
 
