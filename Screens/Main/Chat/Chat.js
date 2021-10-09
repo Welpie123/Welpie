@@ -36,8 +36,8 @@ export default function Chat({ route }) {
   useEffect(() => {
     const subscriber = db
       .collection("Chat")
-      .where("recipient", "==", "Mr Dead")
-      .where("sender", "==", "Massimo Dutti")
+      .where("recipient", "==", firebase.auth().currentUser.displayName)
+      .where("sender", "==", name)
       .onSnapshot(async (querySnapshot) => {
         const users = [];
 
@@ -56,7 +56,7 @@ export default function Chat({ route }) {
               user: {
                 _id: 2,
                 name: "React Native",
-                avatar: "https://placeimg.com/140/140/any",
+                avatar: item.pic,
               },
             };
           })
@@ -72,6 +72,12 @@ export default function Chat({ route }) {
     setMessages((previousMessages) =>
       GiftedChat.append(previousMessages, messages)
     );
+    db.collection("Chat").add({
+      sender: firebase.auth().currentUser.displayName,
+      recipient: name,
+      message: messages[0].text,
+      _id: 1,
+    });
   }, []);
 
   return (
