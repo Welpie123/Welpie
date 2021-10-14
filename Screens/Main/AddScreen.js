@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { Picker } from "@react-native-picker/picker";
 import {
   View,
   Text,
@@ -11,6 +12,7 @@ import {
   Platform,
   Image,
   Alert,
+  LogBox,
 } from "react-native";
 import * as Progress from "react-native-progress";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -29,6 +31,8 @@ import DropDownPicker from "react-native-dropdown-picker";
 if (!firebase.apps.length) {
   firebase.initializeApp(key.firebaseConfig);
 }
+
+LogBox.ignoreLogs([`source.uri should not be an`]);
 
 const { height, width } = Dimensions.get("screen");
 const db = firebase.firestore();
@@ -55,7 +59,7 @@ export default function AddScreen({ navigation, route }) {
   const [progress, setProgress] = useState(0.0);
   const [result, setResult] = useState("");
   const inputRef = useRef();
-  //const { itemId } = route.params;
+  const { itemId } = route.params;
 
   useEffect(() => {
     (async () => {
@@ -206,23 +210,16 @@ export default function AddScreen({ navigation, route }) {
               marginTop: 10,
               borderTopWidth: 0.5,
               paddingTop: 10,
-              elevation: 0.1,
             }}
           >
             <View style={styles.profilePic}>
               <Icon name="user" size={30} color="white" />
             </View>
-            <View
-              style={{
-                marginLeft: 15,
-                justifyContent: "center",
-                elevation: 1,
-              }}
-            >
+            <View style={{ marginLeft: 15, justifyContent: "center" }}>
               <Text style={{ fontWeight: "bold", fontSize: 17 }}>
                 {firebase.auth().currentUser.displayName}
               </Text>
-              <DropDownPicker
+              {/* <DropDownPicker
                 open={open}
                 value={value}
                 items={items}
@@ -233,12 +230,36 @@ export default function AddScreen({ navigation, route }) {
                 style={{
                   width: 100,
                   height: 25,
-                  borderRadius: 5,
-                  borderColor: "grey",
-                  borderWidth: 0.4,
                 }}
                 placeholderStyle={{ color: "grey" }}
-              />
+                dropDownDirection="AUTO"
+                zIndex={199}
+              /> */}
+              {/* <Picker>
+                <Picker.Item label="noice" value="noice" />
+              </Picker> */}
+              {itemId == "user" ? (
+                <Picker
+                  selectedValue={value}
+                  onValueChange={(item, index) => setValue(item)}
+                  style={{ width: 150, marginLeft: -7 }}
+                >
+                  <Picker.Item label="Cars" value="cars" />
+                  <Picker.Item label="Animals" value="animals" />
+                </Picker>
+              ) : (
+                <Picker
+                  selectedValue={value}
+                  onValueChange={(item, index) => setValue(item)}
+                  style={{ width: 150, marginLeft: -7 }}
+                >
+                  <Picker.Item label="Cars" value="cars" />
+                  <Picker.Item label="Animals" value="animals" />
+                  <Picker.Item label="Kitchen" value="kitchen" />
+                  <Picker.Item label="Fashion" value="fashion" />
+                  <Picker.Item label="Perfume" value="perfume" />
+                </Picker>
+              )}
             </View>
           </View>
           <View>

@@ -64,6 +64,26 @@ export default function Chat({ route }) {
         setLoading(false);
       });
 
+    const subscriber1 = db
+      .collection("Chat")
+      .where("recipient", "==", name)
+      .where("sender", "==", firebase.auth().currentUser.displayName)
+      .onSnapshot(async (querySnapshot) => {
+        const users = [];
+
+        querySnapshot.forEach((documentSnapshot) => {
+          users.push({
+            ...documentSnapshot.data(),
+            key: documentSnapshot.id,
+          });
+        });
+        setMessages((previousMessages) =>
+          GiftedChat.append(previousMessages, [
+            { _id: "12", text: users[0].message, user: { _id: 1 } },
+          ])
+        );
+      });
+
     // Unsubscribe from events when no longer in use
     return () => subscriber();
   }, []);
@@ -72,6 +92,7 @@ export default function Chat({ route }) {
     setMessages((previousMessages) =>
       GiftedChat.append(previousMessages, messages)
     );
+
     db.collection("Chat").add({
       sender: firebase.auth().currentUser.displayName,
       recipient: name,
