@@ -33,7 +33,7 @@ export default function ChatScreen({ navigation }) {
   useEffect(() => {
     const subscriber = db
       .collection("Chat")
-      .where("recipient", "==", "Mr Dead")
+      .where("recipient", "==", firebase.auth().currentUser.displayName)
       .onSnapshot(async (querySnapshot) => {
         const users = [];
 

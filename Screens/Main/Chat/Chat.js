@@ -30,7 +30,7 @@ const db = firebase.firestore();
 export default function Chat({ route }) {
   const { name } = route.params;
   const [messages, setMessages] = useState({});
-  const [data, setData] = useState({});
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -78,20 +78,30 @@ export default function Chat({ route }) {
           });
         });
         setMessages((previousMessages) =>
-          GiftedChat.append(previousMessages, [
-            { _id: "12", text: users[0].message, user: { _id: 1 } },
-          ])
+          GiftedChat.append(
+            previousMessages,
+            users.map((item, index) => {
+              return {
+                _id: index,
+                text: item.message,
+                user: { _id: 1 },
+              };
+            })
+          )
         );
+        console.log("run");
       });
 
     // Unsubscribe from events when no longer in use
-    return () => subscriber();
+    return () => {
+      subscriber();
+    };
   }, []);
 
   const onSend = useCallback((messages = []) => {
-    setMessages((previousMessages) =>
-      GiftedChat.append(previousMessages, messages)
-    );
+    // setMessages((previousMessages) =>
+    //   GiftedChat.append(previousMessages, messages)
+    // );
 
     db.collection("Chat").add({
       sender: firebase.auth().currentUser.displayName,
