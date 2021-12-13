@@ -47,20 +47,7 @@ export default function Chat({ route }) {
             key: documentSnapshot.id,
           });
         });
-        setMessages(
-          users.map((item) => {
-            return {
-              _id: 1,
-              text: item.message,
-              createdAt: item.time,
-              user: {
-                _id: 2,
-                name: "React Native",
-                avatar: item.pic,
-              },
-            };
-          })
-        );
+        setMessages(users);
         setLoading(false);
       });
 
@@ -78,18 +65,8 @@ export default function Chat({ route }) {
           });
         });
         setMessages((previousMessages) =>
-          GiftedChat.append(
-            previousMessages,
-            users.map((item, index) => {
-              return {
-                _id: index,
-                text: item.message,
-                user: { _id: 1 },
-              };
-            })
-          )
+          GiftedChat.append(previousMessages, users)
         );
-        console.log("run");
       });
 
     // Unsubscribe from events when no longer in use
@@ -106,8 +83,9 @@ export default function Chat({ route }) {
     db.collection("Chat").add({
       sender: firebase.auth().currentUser.displayName,
       recipient: name,
-      message: messages[0].text,
+      text: messages[0].text,
       _id: 1,
+      user: { _id: 1 },
     });
   }, []);
 
