@@ -20,6 +20,7 @@ import CommentsScreen from "./Screens/Main/CommentsScreen";
 import VerifyScreen from "./Screens/Loading/VerifyScreen";
 import ChatScreen from "./Screens/Main/Chat/ChatScreen";
 import Chat from "./Screens/Main/Chat/Chat";
+import NewMessage from "./Screens/Main/Chat/NewMessage";
 import * as key from "./Firebase";
 import { color } from "react-native-reanimated";
 import { View, Text, Animated, Dimensions, Platform } from "react-native";
@@ -262,6 +263,7 @@ export default function App() {
             cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
           }}
         />
+        <Stack.Screen name="New" component={NewMessage} />
       </Stack.Navigator>
     </NavigationContainer>
   );

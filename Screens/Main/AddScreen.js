@@ -40,7 +40,7 @@ const store = firebase.storage();
 
 export default function AddScreen({ navigation, route }) {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState("cars");
   const [items, setItems] = useState([
     { label: "Cars", value: "cars" },
     { label: "Animals", value: "animals" },
@@ -142,10 +142,12 @@ export default function AddScreen({ navigation, route }) {
       text: text,
       timestamp: Date.now(),
     });
-    navigation.reset({
-      index: 0,
-      routes: [{ name: "Home" }],
-    });
+    // navigation.reset({
+    //   index: 0,
+    //   routes: [{ name: "Home" }],
+    // });
+    navigation.goBack();
+    setResult(""), inputRef.current.clear();
   }
 
   return (

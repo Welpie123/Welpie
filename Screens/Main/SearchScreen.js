@@ -8,6 +8,7 @@ import {
   LogBox,
   Dimensions,
   TouchableOpacity,
+  Image,
 } from "react-native";
 import firebase from "firebase/app";
 import "firebase/storage";
@@ -53,6 +54,43 @@ export default function SearchScreen({ navigation }) {
         style={styles.users}
         onPress={() => navigation.navigate("Profile", { name: items.name })}
       >
+        {/* <Image
+          source={{ uri: items.profilePic }}
+          style={{
+            width: 25,
+            height: 25,
+            borderRadius: 12.5,
+            marginLeft: 10,
+            marginRight: 15,
+          }}
+        /> */}
+        {items.profilePic == "" ? (
+          <View
+            style={{
+              backgroundColor: "#cccccc",
+              width: 25,
+              height: 25,
+              borderRadius: 12.5,
+              justifyContent: "center",
+              alignItems: "center",
+              marginLeft: 10,
+              marginRight: 15,
+            }}
+          >
+            <Icon name="user" size={20} />
+          </View>
+        ) : (
+          <Image
+            source={{ uri: items.profilePic }}
+            style={{
+              width: 25,
+              height: 25,
+              borderRadius: 12.5,
+              marginLeft: 10,
+              marginRight: 15,
+            }}
+          />
+        )}
         <Text>{items.name}</Text>
       </TouchableOpacity>
     );
@@ -82,6 +120,7 @@ export default function SearchScreen({ navigation }) {
           placeholder="Search"
           onChangeText={(text) => setName(text)}
           onSubmitEditing={() => change(name)}
+          style={{ marginLeft: 15, width: "75%" }}
         />
         <TouchableOpacity
           style={{ alignSelf: "center", marginRight: 5 }}
@@ -124,7 +163,7 @@ const styles = StyleSheet.create({
     width: "85%",
     height: 35,
     marginTop: 20,
-    justifyContent: "center",
     alignItems: "center",
+    flexDirection: "row",
   },
 });

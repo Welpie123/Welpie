@@ -27,15 +27,14 @@ const { height, width } = Dimensions.get("screen");
 
 const db = firebase.firestore();
 
-export default function ChatScreen({ navigation }) {
-  const [oldmessages, setOldMessages] = useState({});
-  const [messages, setMessages] = useState({});
+export default function NewScreen({ navigation }) {
+  const [users, setUsers] = useState({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const subscriber = db
-      .collection("Chat")
-      .where("recipient", "==", firebase.auth().currentUser.displayName)
+      .collection("test_users")
+      .where("access", "==", "admin")
       .onSnapshot(async (querySnapshot) => {
         const users = [];
 
@@ -45,19 +44,9 @@ export default function ChatScreen({ navigation }) {
             key: documentSnapshot.id,
           });
         });
-        subscriber2(users);
+        setUsers(users);
         setLoading(false);
       });
-
-    const subscriber2 = (st) => {
-      const unique = new Set();
-      const newMessages = st.filter((message) => {
-        const isPresent = unique.has(message.sender);
-        unique.add(message.sender);
-        return !isPresent;
-      });
-      setMessages(newMessages);
-    };
 
     // Unsubscribe from events when no longer in use
     return () => subscriber();
@@ -66,7 +55,7 @@ export default function ChatScreen({ navigation }) {
   function Item({ items }) {
     return (
       <TouchableOpacity
-        onPress={() => navigation.navigate("ChatPanel", { name: items.sender })}
+        onPress={() => navigation.navigate("ChatPanel", { name: items.name })}
       >
         <View>
           <View
@@ -78,19 +67,18 @@ export default function ChatScreen({ navigation }) {
               paddingVertical: 10,
             }}
           >
-            {items.pic == undefined ? (
+            {items.profilePic == "" ? (
               <Icon name="user-circle-o" size={50} />
             ) : (
               <Image
-                source={{ uri: items.pic }}
+                source={{ uri: items.profilePic }}
                 style={{ width: 50, height: 50, borderRadius: 25 }}
               />
             )}
             <View style={{ marginLeft: 10 }}>
               <Text style={{ fontWeight: "bold", fontSize: 17 }}>
-                {items.sender}
+                {items.name}
               </Text>
-              <Text>{items.message}</Text>
             </View>
           </View>
         </View>
@@ -119,7 +107,7 @@ export default function ChatScreen({ navigation }) {
           >
             <Icon name="user-circle-o" size={32} />
             <Text style={{ marginLeft: 20, fontSize: 25, fontWeight: "bold" }}>
-              Chats
+              New Chat
             </Text>
           </View>
           <TouchableOpacity
@@ -132,14 +120,13 @@ export default function ChatScreen({ navigation }) {
               alignItems: "center",
               marginRight: 10,
             }}
-            onPress={() => navigation.navigate("New")}
           >
             <FontAwesome5 name="pen" size={20} />
           </TouchableOpacity>
         </View>
         <ScrollView style={{ marginBottom: 100 }}>
           <FlatList
-            data={messages}
+            data={users}
             renderItem={({ item }) => <Item items={item} />}
             style={{
               height: height,
