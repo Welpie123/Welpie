@@ -15,6 +15,7 @@ import HomeScreen from "./Screens/Main/HomeScreen";
 import SearchScreen from "./Screens/Main/SearchScreen";
 import FollowingScreen from "./Screens/Main/FollowingScreen";
 import ProfileScreen from "./Screens/Main/ProfileScreen";
+import ProfileSecScreen from "./Screens/Main/ProfileSecScreen";
 import LoadingScreen from "./Screens/Loading/Loading";
 import CommentsScreen from "./Screens/Main/CommentsScreen";
 import VerifyScreen from "./Screens/Loading/VerifyScreen";
@@ -264,6 +265,7 @@ export default function App() {
           }}
         />
         <Stack.Screen name="New" component={NewMessage} />
+        <Stack.Screen name="ProfileSec" component={ProfileSecScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

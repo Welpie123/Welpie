@@ -52,7 +52,7 @@ export default function SearchScreen({ navigation }) {
     return (
       <TouchableOpacity
         style={styles.users}
-        onPress={() => navigation.navigate("Profile", { name: items.name })}
+        onPress={() => navigation.navigate("ProfileSec", { name: items.name })}
       >
         {/* <Image
           source={{ uri: items.profilePic }}

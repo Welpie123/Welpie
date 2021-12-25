@@ -29,16 +29,17 @@ LogBox.ignoreLogs([`Encountered two children`]);
 const db = firebase.firestore();
 const { height, width } = Dimensions.get("screen");
 
-export default function ProfileScreen({ navigation }) {
+export default function ProfileSecScreen({ navigation, route }) {
   const [user, setUser] = useState({});
   const [value, setValue] = useState(0);
   const [loading, setLoading] = useState(true);
   const [post, setPost] = useState({});
+  const { name } = route.params;
 
   useEffect(() => {
     const subscriber = db
       .collection("test_users")
-      .where("name", "==", firebase.auth().currentUser.displayName)
+      .where("name", "==", name)
       .onSnapshot((querySnapshot) => {
         const users = [];
 
@@ -56,7 +57,7 @@ export default function ProfileScreen({ navigation }) {
 
     const posts = db
       .collection("Articles")
-      .where("Name", "==", firebase.auth().currentUser.displayName)
+      .where("Name", "==", name)
       .onSnapshot((querySnapshot) => {
         const users = [];
 
@@ -231,7 +232,7 @@ export default function ProfileScreen({ navigation }) {
           style={{ height: 80, width: 80, borderRadius: 40 }}
         />
         <Text style={{ color: "white", fontWeight: "bold", fontSize: 20 }}>
-          {firebase.auth().currentUser.displayName}
+          {name}
         </Text>
         <View
           style={{
@@ -241,14 +242,7 @@ export default function ProfileScreen({ navigation }) {
             marginTop: 10,
           }}
         >
-          <TouchableOpacity
-            onPress={() => setValue(0)}
-            style={{
-              justifyContent: "center",
-              alignItems: "center",
-              marginLeft: -20,
-            }}
-          >
+          <TouchableOpacity onPress={() => setValue(0)}>
             <Text
               style={{
                 color: "white",
@@ -261,14 +255,7 @@ export default function ProfileScreen({ navigation }) {
               Me
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => setValue(1)}
-            style={{
-              justifyContent: "center",
-              alignItems: "center",
-              marginHorizontal: 10,
-            }}
-          >
+          <TouchableOpacity onPress={() => setValue(1)}>
             <Text
               style={{
                 color: "white",
@@ -281,48 +268,39 @@ export default function ProfileScreen({ navigation }) {
               Posts
             </Text>
           </TouchableOpacity>
-          {loading ? (
-            <Text>Loading</Text>
-          ) : user[0].access == "user" ? (
-            <TouchableOpacity onPress={() => setValue(3)}>
-              <Text
-                style={{
-                  color: "white",
-                  fontSize: 17,
-                  borderBottomWidth: value == 3 ? 5 : 2,
-                  borderColor: "white",
-                  paddingBottom: 7,
-                }}
-              >
-                Statistics
-              </Text>
-            </TouchableOpacity>
-          ) : (
-            <Text></Text>
-          )}
         </View>
       </View>
       {loading ? (
         <Text style={{ alignSelf: "center" }}>Loading</Text>
       ) : value == 0 ? (
         <View style={styles.data}>
-          <TouchableOpacity
-            style={{ position: "relative", left: 125, bottom: 50 }}
-          >
-            <Text style={{ color: "#0d87f2" }}>Edit</Text>
-          </TouchableOpacity>
           <Text>Name</Text>
           <Text style={styles.about}>{user[0].name}</Text>
           <Text>Email</Text>
           <Text style={styles.about}>{user[0].email}</Text>
           <Text>Birthdate</Text>
-          <Text style={styles.about}>{user[0].birth}</Text>
-          <Text>Occupation</Text>
-          <Text style={styles.about}>{user[0].occupation}</Text>
-          <Text>Location</Text>
-          <Text style={styles.about}>{user[0].location}</Text>
-          <Text>Phone Number</Text>
-          <Text style={styles.about}>{user[0].num}</Text>
+          <Text style={styles.about}>
+            {user[0].birth == "" ? "No data" : user[0].birth}
+          </Text>
+
+          {user[0].access == "admin" ? (
+            <View style={styles.data1}>
+              <Text>Occupation</Text>
+              <Text style={styles.about}>
+                {user[0].occupation == "" ? "No data" : user[0].occupation}
+              </Text>
+              <Text>Location</Text>
+              <Text style={styles.about}>
+                {user[0].location == "" ? "No data" : user[0].location}
+              </Text>
+              <Text>Phone Number</Text>
+              <Text style={styles.about}>
+                {user[0].num == "" ? "No data" : user[0].num}
+              </Text>
+            </View>
+          ) : (
+            <Text></Text>
+          )}
         </View>
       ) : (
         <View>
@@ -410,5 +388,13 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     borderTopWidth: 0.5,
     borderTopColor: "#ccc",
+  },
+  data1: {
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "white",
+    width: width * 0.75,
+    alignSelf: "center",
+    borderRadius: 20,
   },
 });

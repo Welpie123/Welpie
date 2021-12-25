@@ -20,7 +20,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#7653D9"
+        "backgroundColor": "#673DDC"
       },
       "package": "com.welpie.welpie",
       "googleServicesFile": "./google-services.json",
