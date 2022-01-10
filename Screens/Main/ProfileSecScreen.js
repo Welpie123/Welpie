@@ -35,6 +35,7 @@ export default function ProfileSecScreen({ navigation, route }) {
   const [loading, setLoading] = useState(true);
   const [post, setPost] = useState({});
   const { name } = route.params;
+  const [me, setMe] = useState({});
 
   useEffect(() => {
     const subscriber = db
@@ -52,7 +53,6 @@ export default function ProfileSecScreen({ navigation, route }) {
 
         setUser(users);
         console.log(users);
-        setLoading(false);
       });
 
     const posts = db
@@ -70,9 +70,35 @@ export default function ProfileSecScreen({ navigation, route }) {
 
         setPost(users);
       });
+
+    const me = db
+      .collection("test_users")
+      .where("name", "==", firebase.auth().currentUser.displayName)
+      .onSnapshot((querySnapshot) => {
+        const users = [];
+
+        querySnapshot.forEach((documentSnapshot) => {
+          users.push({
+            ...documentSnapshot.data(),
+            key: documentSnapshot.id,
+          });
+        });
+
+        setMe(users);
+        console.log(users);
+        setLoading(false);
+      });
     // Unsubscribe from events when no longer in use
     return () => subscriber();
   }, []);
+
+  function follow() {
+    db.collection("test_users")
+      .doc(firebase.auth().currentUser.uid)
+      .update({
+        following: firebase.firestore.FieldValue.arrayUnion(name),
+      });
+  }
 
   function Item({ items }) {
     const [liked, setLiked] = useState(false);
@@ -267,6 +293,27 @@ export default function ProfileSecScreen({ navigation, route }) {
             >
               Posts
             </Text>
+          </TouchableOpacity>
+        </View>
+        <View>
+          <TouchableOpacity
+            style={{
+              width: 100,
+              backgroundColor: "white",
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: 10,
+              marginTop: 15,
+            }}
+            onPress={() => follow()}
+          >
+            {loading ? (
+              <Text></Text>
+            ) : me[0].following.includes(name) ? (
+              <Text style={{ fontWeight: "bold", fontSize: 15 }}>Followed</Text>
+            ) : (
+              <Text style={{ fontWeight: "bold", fontSize: 15 }}>Follow</Text>
+            )}
           </TouchableOpacity>
         </View>
       </View>

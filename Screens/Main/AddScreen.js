@@ -40,7 +40,7 @@ const store = firebase.storage();
 
 export default function AddScreen({ navigation, route }) {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState("cars");
+  const [value, setValue] = useState("general");
   const [items, setItems] = useState([
     { label: "Cars", value: "cars" },
     { label: "Animals", value: "animals" },
@@ -49,8 +49,7 @@ export default function AddScreen({ navigation, route }) {
     { label: "Perfume", value: "perfume" },
   ]);
   const [secondItems, setSecondItems] = useState([
-    { label: "Cars", value: "cars" },
-    { label: "Animals", value: "animals" },
+    { label: "General", value: "general" },
   ]);
   const [image, setImage] = useState(null);
   const [text, setText] = useState("");
@@ -246,8 +245,7 @@ export default function AddScreen({ navigation, route }) {
                   onValueChange={(item, index) => setValue(item)}
                   style={{ width: 150, marginLeft: -7 }}
                 >
-                  <Picker.Item label="Cars" value="cars" />
-                  <Picker.Item label="Animals" value="animals" />
+                  <Picker.Item label="General" value="general" />
                 </Picker>
               ) : (
                 <Picker

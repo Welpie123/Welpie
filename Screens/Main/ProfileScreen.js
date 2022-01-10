@@ -17,6 +17,7 @@ import "firebase/firestore";
 import SkeletonContent from "react-native-skeleton-content";
 import moment from "moment";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { BarChart } from "react-native-chart-kit";
 
 if (!firebase.apps.length) {
   firebase.initializeApp(key);
@@ -34,6 +35,23 @@ export default function ProfileScreen({ navigation }) {
   const [value, setValue] = useState(0);
   const [loading, setLoading] = useState(true);
   const [post, setPost] = useState({});
+  const data = {
+    labels: ["Likes", "Followers", "Comments"],
+    datasets: [
+      {
+        data: [2013, 4000, 143],
+      },
+    ],
+  };
+  const chartConfig = {
+    color: (opacity = 1) => `rgba(83, 89, 209, ${opacity})`,
+    strokeWidth: 0, // optional, default 3
+    barPercentage: 0.5,
+    useShadowColorFromDataset: false,
+    backgroundGradientFrom: "white",
+    backgroundGradientTo: "white",
+    fillShadowGradient: "#5359D1", // optional
+  };
 
   useEffect(() => {
     const subscriber = db
@@ -226,10 +244,27 @@ export default function ProfileScreen({ navigation }) {
           alignItems: "center",
         }}
       >
-        <Image
-          source={require("../../assets/profile.png")}
-          style={{ height: 80, width: 80, borderRadius: 40 }}
-        />
+        <TouchableOpacity onPress={() => navigation.navigate("Pic")}>
+          {loading ? (
+            <Text></Text>
+          ) : (
+            <Image
+              source={{ uri: user[0].profilePic }}
+              style={{ height: 80, width: 80, borderRadius: 40 }}
+            />
+          )}
+          <Icon
+            name="pencil"
+            size={25}
+            style={{
+              position: "absolute",
+              bottom: -5,
+              right: -5,
+              backgroundColor: "#41444B",
+              borderRadius: 15,
+            }}
+          />
+        </TouchableOpacity>
         <Text style={{ color: "white", fontWeight: "bold", fontSize: 20 }}>
           {firebase.auth().currentUser.displayName}
         </Text>
@@ -237,7 +272,6 @@ export default function ProfileScreen({ navigation }) {
           style={{
             flexDirection: "row",
             justifyContent: "space-between",
-            width: 100,
             marginTop: 10,
           }}
         >
@@ -246,7 +280,6 @@ export default function ProfileScreen({ navigation }) {
             style={{
               justifyContent: "center",
               alignItems: "center",
-              marginLeft: -20,
             }}
           >
             <Text
@@ -283,7 +316,7 @@ export default function ProfileScreen({ navigation }) {
           </TouchableOpacity>
           {loading ? (
             <Text>Loading</Text>
-          ) : user[0].access == "user" ? (
+          ) : user[0].access == "admin" ? (
             <TouchableOpacity onPress={() => setValue(3)}>
               <Text
                 style={{
@@ -292,6 +325,7 @@ export default function ProfileScreen({ navigation }) {
                   borderBottomWidth: value == 3 ? 5 : 2,
                   borderColor: "white",
                   paddingBottom: 7,
+                  marginTop: 2,
                 }}
               >
                 Statistics
@@ -307,24 +341,44 @@ export default function ProfileScreen({ navigation }) {
       ) : value == 0 ? (
         <View style={styles.data}>
           <TouchableOpacity
-            style={{ position: "relative", left: 125, bottom: 50 }}
+            style={{
+              position: "relative",
+              left: 120,
+              bottom: user[0].access == "admin" ? 50 : 110,
+            }}
+            onPress={() => navigation.navigate("Edit", { data: user[0] })}
           >
-            <Text style={{ color: "#0d87f2" }}>Edit</Text>
+            <Text style={{ color: "blue" }}>Edit</Text>
           </TouchableOpacity>
           <Text>Name</Text>
           <Text style={styles.about}>{user[0].name}</Text>
           <Text>Email</Text>
           <Text style={styles.about}>{user[0].email}</Text>
           <Text>Birthdate</Text>
-          <Text style={styles.about}>{user[0].birth}</Text>
-          <Text>Occupation</Text>
-          <Text style={styles.about}>{user[0].occupation}</Text>
-          <Text>Location</Text>
-          <Text style={styles.about}>{user[0].location}</Text>
-          <Text>Phone Number</Text>
-          <Text style={styles.about}>{user[0].num}</Text>
+          <Text style={styles.about}>
+            {user[0].birth == "" ? "No data" : user[0].birth}
+          </Text>
+
+          {user[0].access == "admin" ? (
+            <View style={styles.data1}>
+              <Text>Occupation</Text>
+              <Text style={styles.about}>
+                {user[0].occupation == "" ? "No data" : user[0].occupation}
+              </Text>
+              <Text>Location</Text>
+              <Text style={styles.about}>
+                {user[0].location == "" ? "No data" : user[0].location}
+              </Text>
+              <Text>Phone Number</Text>
+              <Text style={styles.about}>
+                {user[0].num == "" ? "No data" : user[0].num}
+              </Text>
+            </View>
+          ) : (
+            <Text></Text>
+          )}
         </View>
-      ) : (
+      ) : value == 1 ? (
         <View>
           <ScrollView>
             <FlatList
@@ -341,6 +395,24 @@ export default function ProfileScreen({ navigation }) {
               verticalScrollIndicator={false}
             />
           </ScrollView>
+        </View>
+      ) : (
+        <View
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            alignSelf: "center",
+            marginTop: 100,
+          }}
+        >
+          <BarChart
+            data={data}
+            width={width / 1.5}
+            height={220}
+            yAxisLabel=""
+            chartConfig={chartConfig}
+            fromZero={true}
+          />
         </View>
       )}
     </View>
@@ -410,5 +482,13 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     borderTopWidth: 0.5,
     borderTopColor: "#ccc",
+  },
+  data1: {
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "white",
+    width: width * 0.75,
+    alignSelf: "center",
+    borderRadius: 20,
   },
 });

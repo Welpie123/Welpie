@@ -11,7 +11,7 @@ import {
   ActivityIndicator,
   ScrollView,
 } from "react-native";
-import * as Notifications from 'expo-notifications'
+import * as Notifications from "expo-notifications";
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
@@ -35,7 +35,7 @@ export default function LoginScreen({ navigation }) {
   const db = firebase.firestore();
 
   async function addUserToDb() {
-    const token = (await Notifications.getExpoPushTokenAsync()).data
+    const token = (await Notifications.getExpoPushTokenAsync()).data;
     db.collection("test_users")
       .doc(firebase.auth().currentUser.uid)
       .set({
@@ -45,6 +45,11 @@ export default function LoginScreen({ navigation }) {
         uid: String(firebase.auth().currentUser.uid),
         following: [],
         token: token,
+        profilePic: "",
+        birth: "",
+        location: "",
+        occupation: "",
+        num: "",
       })
       .then(console.log(`${username} added as user`));
     setLoading(false);
@@ -56,7 +61,7 @@ export default function LoginScreen({ navigation }) {
   }
 
   async function addAdminToDb() {
-    const token = (await Notifications.getExpoPushTokenAsync()).data
+    const token = (await Notifications.getExpoPushTokenAsync()).data;
     await db
       .collection("test_users")
       .doc(firebase.auth().currentUser.uid)
@@ -67,7 +72,12 @@ export default function LoginScreen({ navigation }) {
         verified: false,
         uid: String(firebase.auth().currentUser.uid),
         token: token,
-        following: []
+        following: [],
+        birth: "",
+        occupation: "",
+        profilePic: "",
+        location: "",
+        num: "",
       })
       .then(() => {
         console.log(`${username} added as admin`);

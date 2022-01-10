@@ -18,6 +18,8 @@ import ProfileScreen from "./Screens/Main/ProfileScreen";
 import ProfileSecScreen from "./Screens/Main/ProfileSecScreen";
 import LoadingScreen from "./Screens/Loading/Loading";
 import CommentsScreen from "./Screens/Main/CommentsScreen";
+import EditScreen from "./Screens/Main/EditScreen";
+import ProfilePicScreen from "./Screens/Main/ProfilePicScreen";
 import VerifyScreen from "./Screens/Loading/VerifyScreen";
 import ChatScreen from "./Screens/Main/Chat/ChatScreen";
 import Chat from "./Screens/Main/Chat/Chat";
@@ -266,6 +268,8 @@ export default function App() {
         />
         <Stack.Screen name="New" component={NewMessage} />
         <Stack.Screen name="ProfileSec" component={ProfileSecScreen} />
+        <Stack.Screen name="Edit" component={EditScreen} />
+        <Stack.Screen name="Pic" component={ProfilePicScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

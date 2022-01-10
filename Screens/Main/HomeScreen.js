@@ -27,6 +27,7 @@ import chat from "../../assets/chat.png";
 import about from "../../assets/about.png";
 import settings from "../../assets/settings.png";
 import logout from "../../assets/logout.png";
+import download from "../../assets/download.png";
 // Menu
 import menu from "../../assets/menu.png";
 import close from "../../assets/close.png";
@@ -56,9 +57,9 @@ export default function App({ route, navigation }) {
   const closeButtonOffset = useRef(new Animated.Value(0)).current;
   const [loading, setLoading] = useState(true); // Set loading to true on component mount
   const [users, setUsers] = useState({});
-  const [tag, setTag] = useState("cars");
+  const [tag, setTag] = useState("general");
   const [comment, setComment] = useState("");
-  const [selected, setSelected] = useState("cars");
+  const [selected, setSelected] = useState("general");
 
   const change = (t) => {
     setLoading(true);
@@ -310,15 +311,22 @@ export default function App({ route, navigation }) {
           {TabButton(
             currentTab,
             setCurrentTab,
-            "Settings",
-            settings,
-            navigation
+            "Check for update",
+            download,
+            navigation,
+            "update"
           )}
-          {TabButton(currentTab, setCurrentTab, "About", about, navigation)}
         </View>
 
         <View style={{ marginBottom: height * 0.15 }}>
-          {TabButton(currentTab, setCurrentTab, "LogOut", logout, navigation)}
+          {TabButton(
+            currentTab,
+            setCurrentTab,
+            "LogOut",
+            logout,
+            navigation,
+            "logout"
+          )}
         </View>
       </View>
 
@@ -437,6 +445,31 @@ export default function App({ route, navigation }) {
               horizontal={true}
               showsHorizontalScrollIndicator={false}
             >
+              <TouchableOpacity
+                style={{ paddingRight: 10 }}
+                onPress={() => {
+                  change("general");
+                  setSelected("general");
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 20,
+                    color: selected == "general" ? "pink" : "white",
+                  }}
+                >
+                  General
+                </Text>
+              </TouchableOpacity>
+              <Text
+                style={{
+                  fontSize: 20,
+                  color: "white",
+                  paddingRight: 10,
+                }}
+              >
+                |
+              </Text>
               <TouchableOpacity
                 style={{ paddingRight: 10 }}
                 onPress={() => {
@@ -569,7 +602,14 @@ export default function App({ route, navigation }) {
 }
 
 // For multiple Buttons...
-const TabButton = (currentTab, setCurrentTab, title, image, navigation) => {
+const TabButton = (
+  currentTab,
+  setCurrentTab,
+  title,
+  image,
+  navigation,
+  tab
+) => {
   return (
     <TouchableOpacity
       onPress={() => {
@@ -589,9 +629,9 @@ const TabButton = (currentTab, setCurrentTab, title, image, navigation) => {
           flexDirection: "row",
           alignItems: "center",
           paddingVertical: 8,
-          backgroundColor: currentTab == title ? "white" : "transparent",
+          backgroundColor: tab == "update" ? "white" : "transparent",
           paddingLeft: 13,
-          paddingRight: 35,
+          paddingRight: 15,
           borderRadius: 8,
           marginTop: 15,
         }}
@@ -601,7 +641,7 @@ const TabButton = (currentTab, setCurrentTab, title, image, navigation) => {
           style={{
             width: 25,
             height: 25,
-            tintColor: currentTab == title ? "#5359D1" : "white",
+            tintColor: tab == "update" ? "#5359D1" : "white",
           }}
         ></Image>
 
@@ -610,7 +650,7 @@ const TabButton = (currentTab, setCurrentTab, title, image, navigation) => {
             fontSize: 15,
             fontWeight: "bold",
             paddingLeft: 15,
-            color: currentTab == title ? "#5359D1" : "white",
+            color: tab == "update" ? "#5359D1" : "white",
           }}
         >
           {title}
