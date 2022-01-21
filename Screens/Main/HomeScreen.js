@@ -14,7 +14,9 @@ import {
   ActivityIndicator,
   StatusBar,
   Platform,
+  Alert,
 } from "react-native";
+import * as Updates from "expo-updates";
 import moment from "moment";
 import Icon from "react-native-vector-icons/FontAwesome";
 import firebase from "firebase/app";
@@ -608,8 +610,29 @@ const TabButton = (
   title,
   image,
   navigation,
-  tab
+  tab,
+  func
 ) => {
+  async function checkUpdate() {
+    const update = await Updates.fetchUpdateAsync();
+    const check = await Updates.checkForUpdateAsync();
+    try {
+      if (check.isAvailable) {
+        Alert.alert("Update available", "", [
+          { text: "Install", onPress: () => Updates.reloadAsync() },
+          {
+            text: "Cancel",
+            onPress: () => console.log("cancel"),
+            style: "cancel",
+          },
+        ]);
+      } else {
+        Alert.alert("Latest version installed");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
   return (
     <TouchableOpacity
       onPress={() => {
@@ -621,6 +644,9 @@ const TabButton = (
           firebase.auth().signOut();
         } else {
           setCurrentTab(title);
+        }
+        if (title == "Check for update") {
+          checkUpdate();
         }
       }}
     >

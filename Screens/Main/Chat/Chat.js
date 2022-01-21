@@ -41,6 +41,10 @@ export default function Chat({ route }) {
       .collection("Chat")
       .orderBy("createdAt")
       .limit(25)
+      .where("key", "in", [
+        firebase.auth().currentUser.displayName + name,
+        name + firebase.auth().currentUser.displayName,
+      ])
       .onSnapshot(async (querySnapshot) => {
         const users = [];
 
@@ -83,6 +87,7 @@ export default function Chat({ route }) {
       _id: 1,
       user: { _id: 1 },
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      key: firebase.auth().currentUser.displayName + name,
     });
   }
 
@@ -110,7 +115,7 @@ export default function Chat({ route }) {
 
   return (
     <SafeAreaView>
-      <View style={{ backgroundColor: "white" }}>
+      <View style={{ backgroundColor: "white", height: "100%" }}>
         <FlatList
           data={messages}
           renderItem={({ item }) => <Item items={item} />}
