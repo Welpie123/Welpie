@@ -14,7 +14,7 @@ import {
 import firebase from "firebase/app";
 import "firebase/storage";
 import "firebase/firestore";
-import SkeletonContent from "react-native-skeleton-content";
+import SkeletonContent from "@03balogun/react-native-skeleton-content";
 import moment from "moment";
 import Icon from "react-native-vector-icons/FontAwesome";
 

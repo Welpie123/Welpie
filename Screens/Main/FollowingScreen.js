@@ -12,7 +12,7 @@ import {
   ScrollView,
   RefreshControl,
 } from "react-native";
-import SkeletonContent from "react-native-skeleton-content";
+import SkeletonContent from "@03balogun/react-native-skeleton-content";
 import firebase from "firebase/app";
 import "firebase/storage";
 import "firebase/firestore";

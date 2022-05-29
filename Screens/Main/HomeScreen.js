@@ -34,7 +34,7 @@ import download from "../../assets/download.png";
 import menu from "../../assets/menu.png";
 import close from "../../assets/close.png";
 import * as key from "../../Firebase";
-import SkeletonContent from "react-native-skeleton-content";
+import SkeletonContent from "@03balogun/react-native-skeleton-content";
 import ProgressiveImage from "../../Components/ProgressiveImage";
 
 if (!firebase.apps.length) {
